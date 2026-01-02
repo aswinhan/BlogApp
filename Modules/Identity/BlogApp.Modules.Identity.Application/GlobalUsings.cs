@@ -6,5 +6,4 @@ global using BlogApp.Shared.Domain.Results;
 global using Microsoft.EntityFrameworkCore;
 global using BlogApp.Modules.Identity.Application.Abstractions.Data;
 global using BlogApp.Modules.Identity.Application.Abstractions.Email;
-global using MediatR;
 global using BlogApp.Shared.Application.Abstractions.Messaging;

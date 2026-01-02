@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Shared.Infrastructure.Messaging;
 
-public sealed class InMemoryDispatcher(IServiceProvider serviceProvider) : IDispatcher
+public sealed class InMemorySender(IServiceProvider serviceProvider) : ISender
 {
     public async Task<Result> Send(ICommand command, CancellationToken cancellationToken = default)
     {

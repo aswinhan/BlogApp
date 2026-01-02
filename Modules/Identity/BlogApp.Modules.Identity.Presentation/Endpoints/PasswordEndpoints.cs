@@ -1,8 +1,8 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class PasswordEndpoints : ICarterModule
+public class PasswordEndpoints : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("users").WithTags("Auth");
 

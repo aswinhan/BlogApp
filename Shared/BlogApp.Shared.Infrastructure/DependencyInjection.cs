@@ -10,7 +10,7 @@ public static class DependencyInjection
     public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services, Assembly[] moduleAssemblies)
     {
         // 1. Register Dispatcher
-        services.AddScoped<IDispatcher, InMemoryDispatcher>();
+        services.AddScoped<ISender, InMemorySender>();
 
         // 2. Register Handlers & Decorate with Validation
         services.Scan(scan => scan

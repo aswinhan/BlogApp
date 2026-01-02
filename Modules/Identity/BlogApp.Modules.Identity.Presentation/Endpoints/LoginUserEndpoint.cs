@@ -6,13 +6,13 @@ public class LoginUserEndpoint : IEndpoint
     {
         app.MapPost("users/login", async (
             [FromBody] LoginUserRequest request,
-            IDispatcher dispatcher,
+            ISender sender,
             HttpContext context,
             CancellationToken cancellationToken) =>
         {
             var command = new LoginUserCommand(request.Email, request.Password);
 
-            Result<LoginResponse> result = await dispatcher.Send(command, cancellationToken);
+            Result<LoginResponse> result = await sender.Send(command, cancellationToken);
 
             if (result.IsFailure)
             {
@@ -32,6 +32,7 @@ public class LoginUserEndpoint : IEndpoint
             return Results.Ok(new { result.Value.AccessToken });
         })
         .WithTags("Auth")
+        .RequireRateLimiting("AuthPolicy")
         .WithSummary("Log in a user");
     }
 }

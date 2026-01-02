@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Shared.Application.Abstractions.Messaging;
 
-public interface IDispatcher
+public interface ISender
 {
     Task<Result> Send(ICommand command, CancellationToken cancellationToken = default);
     Task<Result<TResponse>> Send<TResponse>(ICommand<TResponse> command, CancellationToken cancellationToken = default);

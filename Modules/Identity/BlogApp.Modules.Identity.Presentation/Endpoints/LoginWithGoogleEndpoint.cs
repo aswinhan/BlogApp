@@ -1,15 +1,17 @@
-﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-public class LoginWithGoogleEndpoint : ICarterModule
+namespace BlogApp.Modules.Identity.Presentation.Endpoints;
+
+public class LoginWithGoogleEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("users/login/google", async (
-            [FromBody] LoginWithGoogleCommand request,
+            [FromBody] LoginWithGoogleCommand command,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            Result<string> result = await sender.Send(request, cancellationToken);
+            Result<string> result = await sender.Send(command, cancellationToken);
 
             if (result.IsFailure)
             {

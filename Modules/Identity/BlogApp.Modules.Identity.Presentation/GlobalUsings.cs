@@ -1,12 +1,10 @@
 ﻿global using BlogApp.Modules.Identity.Application.Features.Users.RegisterUser;
 global using BlogApp.Shared.Domain.Results;
 global using BlogApp.Shared.Presentation.Extensions;
-global using MediatR;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Routing;
 global using Microsoft.Extensions.DependencyInjection;
-global using Carter;
 global using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
 global using BlogApp.Modules.Identity.Application.Features.Users.ForgotPassword;
 global using BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;

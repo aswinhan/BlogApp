@@ -1,8 +1,8 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class RegisterUserEndpoint : ICarterModule
+public class RegisterUserEndpoint : IEndpoint
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("users/register", async (
             RegisterUserRequest request,
