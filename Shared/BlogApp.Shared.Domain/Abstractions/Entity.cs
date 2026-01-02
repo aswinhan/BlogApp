@@ -10,15 +10,14 @@ public abstract class Entity
     }
 
     // Default constructor for EF Core
-    protected Entity()
-    {
-    }
+    protected Entity() { }
 
     public Guid Id { get; init; }
 
-    public IReadOnlyList<IDomainEvent> GetDomainEvents()
+    public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
     {
-        return _domainEvents.ToList();
+        // Optimization: returns a wrapper instead of copying the whole list
+        return _domainEvents.AsReadOnly();
     }
 
     public void ClearDomainEvents()

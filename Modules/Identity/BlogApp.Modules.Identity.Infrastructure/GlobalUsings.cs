@@ -15,3 +15,8 @@ global using Microsoft.IdentityModel.JsonWebTokens;
 global using Microsoft.IdentityModel.Tokens;
 global using Google.Apis.Auth;
 global using Microsoft.Extensions.Logging;
+global using BlogApp.Modules.Identity.Application.Abstractions.Email;
+global using BlogApp.Modules.Identity.Infrastructure.Services;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Isopoh.Cryptography.Argon2;
+global using System.Security.Cryptography;

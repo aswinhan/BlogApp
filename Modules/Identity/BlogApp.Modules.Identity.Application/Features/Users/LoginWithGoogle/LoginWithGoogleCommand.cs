@@ -1,3 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
+﻿using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
+using BlogApp.Shared.Application.Abstractions.Messaging;
 
-public record LoginWithGoogleCommand(string IdToken) : ICommand<string>;
+namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
+
+public record LoginWithGoogleCommand(string IdToken) : ICommand<LoginResponse>;

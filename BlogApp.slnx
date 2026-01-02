@@ -19,7 +19,8 @@
     <Project Path="Shared/BlogApp.Shared.Infrastructure/BlogApp.Shared.Infrastructure.csproj" />
     <Project Path="Shared/BlogApp.Shared.Presentation/BlogApp.Shared.Presentation.csproj" />
   </Folder>
-  <Folder Name="/SolutionFiles/">
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>

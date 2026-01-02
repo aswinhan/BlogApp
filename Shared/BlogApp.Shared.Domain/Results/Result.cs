@@ -6,12 +6,12 @@ public class Result
     {
         if (isSuccess && error != Error.None)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Success result cannot have an error.");
         }
 
         if (!isSuccess && error == Error.None)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Failure result must have an error.");
         }
 
         IsSuccess = isSuccess;
@@ -25,6 +25,6 @@ public class Result
     public static Result Success() => new(true, Error.None);
     public static Result Failure(Error error) => new(false, error);
 
-    // Helper to return typed result from a generic failure
+    // Optimization: Returns strict typed failure
     public static Result<TValue> Failure<TValue>(Error error) => Result<TValue>.Failure(error);
 }

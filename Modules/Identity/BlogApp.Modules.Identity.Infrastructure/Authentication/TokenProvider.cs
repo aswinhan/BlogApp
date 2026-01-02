@@ -1,4 +1,12 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure.Authentication;
+﻿using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
+using BlogApp.Modules.Identity.Domain.Entities;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+
+namespace BlogApp.Modules.Identity.Infrastructure.Authentication;
 
 internal sealed class TokenProvider(IOptions<JwtOptions> jwtOptions) : ITokenProvider
 {
@@ -14,10 +22,13 @@ internal sealed class TokenProvider(IOptions<JwtOptions> jwtOptions) : ITokenPro
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(JwtRegisteredClaimNames.GivenName, user.FirstName),
-            new(JwtRegisteredClaimNames.FamilyName, user.LastName)
+            new(JwtRegisteredClaimNames.FamilyName, user.LastName),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            
+            // SECURITY CRITICAL: The "Kill Switch" claim
+            new("security_stamp", user.SecurityStamp)
         };
 
-        // Add Roles
         foreach (var role in user.Roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
@@ -38,7 +49,6 @@ internal sealed class TokenProvider(IOptions<JwtOptions> jwtOptions) : ITokenPro
 
     public RefreshToken CreateRefreshToken(User user)
     {
-        // Simple random string for Refresh Token
         var randomNumber = new byte[32];
         using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);

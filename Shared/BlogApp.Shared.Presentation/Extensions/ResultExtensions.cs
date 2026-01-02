@@ -15,7 +15,7 @@ public static class ResultExtensions
             detail: result.Error.Description,
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Error } }
+                { "errors", result.Error.Errors } // Return the array of sub-errors
             }
         );
     }

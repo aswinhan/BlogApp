@@ -2,7 +2,6 @@
 
 public static class EndpointExtensions
 {
-    // 1. Register all IEndpoints in DI
     public static IServiceCollection AddEndpoints(this IServiceCollection services, params Assembly[] assemblies)
     {
         var endpoints = assemblies
@@ -19,12 +18,9 @@ public static class EndpointExtensions
         return services;
     }
 
-    // 2. Map them at startup
     public static IApplicationBuilder MapEndpoints(this WebApplication app)
     {
         var endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
-
-        // Create a versioned group if needed, or just map directly
         IEndpointRouteBuilder builder = app;
 
         foreach (var endpoint in endpoints)

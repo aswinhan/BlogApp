@@ -1,6 +1,62 @@
-@BlogApp.Web_HostAddress = http://localhost:5167
+@Host = https://localhost:7219
+@Email = secure.user@example.com
+@Password = P@ssword123!
 
-GET {{BlogApp.Web_HostAddress}}/weatherforecast/
+### 1. Register a New User
+# Expected: 200 OK (Returns User ID)
+POST {{Host}}/users/register
+Content-Type: application/json
+
+{
+  "firstName": "Aswin",
+  "lastName": "Rajan",
+  "email": "{{Email}}",
+  "password": "{{Password}}"
+}
+
+### 2. Log In (Simulating Frontend)
+# Expected: 200 OK
+# 1. Body: Contains "accessToken" (Short lived)
+# 2. Cookies: Contains "refreshToken" (HttpOnly, Secure)
+# CHECK THE COOKIES TAB IN YOUR EDITOR AFTER RUNNING THIS!
+POST {{Host}}/users/login
+Content-Type: application/json
+
+{
+  "email": "{{Email}}",
+  "password": "{{Password}}"
+}
+
+### 3. Get User Profile (Protected Route)
+# This will FAIL if you don't copy the "accessToken" from Step 2
+GET {{Host}}/weatherforecast
+Authorization: Bearer <PASTE_ACCESS_TOKEN_HERE>
 Accept: application/json
 
-###
+### 4. Refresh Token (Rotate Session)
+# This uses the "refreshToken" cookie automatically.
+# Expected: 200 OK (New Access Token + New Refresh Cookie)
+POST {{Host}}/users/refresh
+Content-Type: application/json
+# Cookie is sent automatically by the HTTP Client if supported, 
+# or you might need to manually handle it depending on your IDE.
+
+### 5. Forgot Password
+POST {{Host}}/users/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{Email}}"
+}
+
+### 6. Hack Attempt (Reset Password)
+# Simulating a password reset. 
+# AFTER THIS, THE OLD TOKENS FROM STEP 2 & 4 SHOULD BE INVALID (Security Stamp Check).
+POST {{Host}}/users/reset-password
+Content-Type: application/json
+
+{
+  "email": "{{Email}}",
+  "token": "<PASTE_TOKEN_FROM_CONSOLE_LOG>",
+  "newPassword": "NewP@ssword999!"
+}

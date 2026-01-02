@@ -13,17 +13,18 @@ public sealed class AuditableEntityInterceptor : SaveChangesInterceptor
         }
 
         var entries = eventData.Context.ChangeTracker.Entries<IAuditableEntity>();
+        var utcNow = DateTime.UtcNow; // Capture once for consistency
 
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedOnUtc = DateTime.UtcNow;
+                entry.Entity.CreatedOnUtc = utcNow;
             }
 
             if (entry.State == EntityState.Modified)
             {
-                entry.Entity.ModifiedOnUtc = DateTime.UtcNow;
+                entry.Entity.ModifiedOnUtc = utcNow;
             }
         }
 

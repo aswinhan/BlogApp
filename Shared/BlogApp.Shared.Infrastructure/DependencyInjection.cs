@@ -1,5 +1,6 @@
 ﻿using BlogApp.Shared.Application.Abstractions.Messaging;
 using BlogApp.Shared.Infrastructure.Messaging;
+using FluentValidation; // Critical for scanning validators
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -12,23 +13,31 @@ public static class DependencyInjection
         // 1. Register Dispatcher
         services.AddScoped<ISender, InMemorySender>();
 
-        // 2. Register Handlers & Decorate with Validation
+        // 2. Register Handlers (FIX: Added publicOnly: false to scan 'internal' handlers)
         services.Scan(scan => scan
             .FromAssemblies(moduleAssemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+
+            // Register CommandHandlers (Void)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
 
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+            // Register CommandHandlers (Result<T>)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
 
-            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)))
+            // Register QueryHandlers
+            .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime()
+
+            // Register Validators
+            .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
-        // 3. Apply Decorators (Validation)
-        // This wraps every ICommandHandler<T> with ValidationCommandHandler<T>
+        // 3. Apply Decorators
         services.TryDecorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandler<>));
         services.TryDecorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandler<,>));
 

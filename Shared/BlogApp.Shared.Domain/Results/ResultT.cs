@@ -19,6 +19,6 @@ public class Result<TValue> : Result
 
     public static Result<TValue> Success(TValue value) => new(value, true, Error.None);
 
-    // Hiding the base Failure to return typed Result<T>
+    // Hiding base Failure to return typed Result<T>
     public new static Result<TValue> Failure(Error error) => new(default, false, error);
 }
