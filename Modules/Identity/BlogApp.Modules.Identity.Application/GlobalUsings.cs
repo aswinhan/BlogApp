@@ -1,0 +1,10 @@
+﻿global using FluentValidation;
+global using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
+global using BlogApp.Modules.Identity.Domain.Entities;
+global using BlogApp.Shared.Domain.Errors;
+global using BlogApp.Shared.Domain.Results;
+global using Microsoft.EntityFrameworkCore;
+global using BlogApp.Modules.Identity.Application.Abstractions.Data;
+global using BlogApp.Modules.Identity.Application.Abstractions.Email;
+global using MediatR;
+global using BlogApp.Shared.Application.Abstractions.Messaging;

@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <Project Path="Aspire/BlogApp.AppHost/BlogApp.AppHost.csproj" />
+    <Project Path="Aspire/BlogApp.ServiceDefaults/BlogApp.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Bootstrapper/">
+    <Project Path="Bootstrapper/BlogApp.Web/BlogApp.Web.csproj" />
+  </Folder>
+  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Identity/">
+    <Project Path="Modules/Identity/BlogApp.Modules.Identity.Application/BlogApp.Modules.Identity.Application.csproj" />
+    <Project Path="Modules/Identity/BlogApp.Modules.Identity.Domain/BlogApp.Modules.Identity.Domain.csproj" />
+    <Project Path="Modules/Identity/BlogApp.Modules.Identity.Infrastructure/BlogApp.Modules.Identity.Infrastructure.csproj" />
+    <Project Path="Modules/Identity/BlogApp.Modules.Identity.Presentation/BlogApp.Modules.Identity.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/BlogApp.Shared.Application/BlogApp.Shared.Application.csproj" />
+    <Project Path="Shared/BlogApp.Shared.Domain/BlogApp.Shared.Domain.csproj" />
+    <Project Path="Shared/BlogApp.Shared.Infrastructure/BlogApp.Shared.Infrastructure.csproj" />
+    <Project Path="Shared/BlogApp.Shared.Presentation/BlogApp.Shared.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/SolutionFiles/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+</Solution>

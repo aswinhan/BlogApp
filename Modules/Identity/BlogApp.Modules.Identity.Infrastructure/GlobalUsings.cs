@@ -1,0 +1,17 @@
+﻿global using BlogApp.Modules.Identity.Domain.Entities;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
+global using BlogApp.Modules.Identity.Infrastructure.Authentication;
+global using BlogApp.Modules.Identity.Infrastructure.Database;
+global using BlogApp.Shared.Infrastructure.Database;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using BlogApp.Modules.Identity.Application.Abstractions.Data;
+global using System.Security.Claims;
+global using System.Text;
+global using Microsoft.Extensions.Options;
+global using Microsoft.IdentityModel.JsonWebTokens;
+global using Microsoft.IdentityModel.Tokens;
+global using Google.Apis.Auth;
+global using Microsoft.Extensions.Logging;

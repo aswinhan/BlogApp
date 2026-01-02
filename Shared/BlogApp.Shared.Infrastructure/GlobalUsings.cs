@@ -1,0 +1,11 @@
+﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using BlogApp.Shared.Domain.Abstractions;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
+global using BlogApp.Shared.Infrastructure.Interceptors;
+global using Microsoft.EntityFrameworkCore.Migrations;
+global using BlogApp.Shared.Application.Abstractions.Messaging;
+global using BlogApp.Shared.Domain.Results;
+global using BlogApp.Shared.Domain.Errors;
+global using FluentValidation;
