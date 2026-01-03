@@ -9,3 +9,6 @@ global using BlogApp.Shared.Application.Abstractions.Messaging;
 global using BlogApp.Shared.Domain.Results;
 global using BlogApp.Shared.Domain.Errors;
 global using FluentValidation;
+global using BlogApp.Shared.Infrastructure.Messaging;
+global using System.Reflection;
+global using System.Collections.Concurrent;

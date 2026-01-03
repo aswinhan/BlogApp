@@ -1,15 +1,9 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Data;
-using BlogApp.Modules.Identity.Application.Abstractions; // For IEmailService
-using BlogApp.Shared.Application.Abstractions.Messaging; // <--- Import Custom Interfaces
-using BlogApp.Shared.Domain.Results;
-using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Modules.Identity.Application.Features.Users.ForgotPassword;
+﻿namespace BlogApp.Modules.Identity.Application.Features.Users.ForgotPassword;
 
 public class ForgotPasswordHandler(
     IIdentityDbContext dbContext,
     IEmailService emailService)
-    : ICommandHandler<ForgotPasswordCommand> // <--- Fixed Interface
+    : ICommandHandler<ForgotPasswordCommand>
 {
     public async Task<Result> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
@@ -28,7 +22,7 @@ public class ForgotPasswordHandler(
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        string resetLink = $"https://localhost:5173/reset-password?token={token}&email={request.Email}";
+        string resetLink = $"https://localhost:7000/reset-password?token={token}&email={request.Email}";
 
         await emailService.SendPasswordResetEmailAsync(user.Email, resetLink, cancellationToken);
 

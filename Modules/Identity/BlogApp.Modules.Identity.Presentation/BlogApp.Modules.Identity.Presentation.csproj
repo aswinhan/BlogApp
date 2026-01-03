@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />
-    <ProjectReference Include="..\BlogApp.Modules.Identity.Application\BlogApp.Modules.Identity.Application.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />
+		<ProjectReference Include="..\BlogApp.Modules.Identity.Application\BlogApp.Modules.Identity.Application.csproj" />
+	</ItemGroup>
 
 </Project>

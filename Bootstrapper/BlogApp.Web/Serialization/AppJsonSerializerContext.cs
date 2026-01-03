@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
 
 // Identity Feature DTOs
 using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
@@ -8,7 +7,7 @@ using BlogApp.Modules.Identity.Application.Features.Users.RefreshToken;
 using BlogApp.Modules.Identity.Application.Features.Users.RegisterUser;
 using BlogApp.Modules.Identity.Application.Features.Users.ForgotPassword;
 using BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;
-using BlogApp.Modules.Identity.Presentation.Endpoints; // For Request records defined in endpoints
+using BlogApp.Modules.Identity.Presentation.Endpoints;
 
 namespace BlogApp.Web.Serialization;
 

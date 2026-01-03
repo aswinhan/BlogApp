@@ -1,5 +1,4 @@
-﻿
-namespace BlogApp.Modules.Identity.Infrastructure;
+﻿namespace BlogApp.Modules.Identity.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -12,7 +11,7 @@ public static class DependencyInjection
         // 2. PASSWORD SECURITY [UPGRADE]
         // Switched to Argon2PasswordHasher (I will provide this class next). 
         // Standard hashing is not enough for "Unhackable" status.
-        services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         // 3. Token Management
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));

@@ -13,19 +13,20 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
-
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
 		<PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" />
 		<PackageReference Include="Scalar.AspNetCore" />
 		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Aspire\BlogApp.ServiceDefaults\BlogApp.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\Modules\Identity\BlogApp.Modules.Identity.Infrastructure\BlogApp.Modules.Identity.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Modules\Identity\BlogApp.Modules.Identity.Presentation\BlogApp.Modules.Identity.Presentation.csproj" />
+		<ProjectReference Include="..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />
 	</ItemGroup>
 
 </Project>

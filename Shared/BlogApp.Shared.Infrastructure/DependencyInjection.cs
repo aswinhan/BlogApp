@@ -1,10 +1,4 @@
-﻿using BlogApp.Shared.Application.Abstractions.Messaging;
-using BlogApp.Shared.Infrastructure.Messaging;
-using FluentValidation; // Critical for scanning validators
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace BlogApp.Shared.Infrastructure;
+﻿namespace BlogApp.Shared.Infrastructure;
 
 public static class DependencyInjection
 {

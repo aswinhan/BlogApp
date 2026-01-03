@@ -1,13 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
-using BlogApp.Modules.Identity.Application.Abstractions.Data;
-using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
-using BlogApp.Modules.Identity.Domain.Entities;
-using BlogApp.Shared.Application.Abstractions.Messaging;
-using BlogApp.Shared.Domain.Errors;
-using BlogApp.Shared.Domain.Results;
-using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
+﻿namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
 
 public class LoginWithGoogleHandler(
     IIdentityDbContext dbContext,

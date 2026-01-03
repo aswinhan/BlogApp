@@ -1,14 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
-using BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
-using BlogApp.Shared.Application.Abstractions.Messaging;
-using BlogApp.Shared.Domain.Results;
-using BlogApp.Shared.Presentation.Endpoints;
-using BlogApp.Shared.Presentation.Extensions; // For Result extensions
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace BlogApp.Modules.Identity.Presentation.Endpoints;
+﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
 public class LoginWithGoogleEndpoint : IEndpoint
 {

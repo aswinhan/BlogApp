@@ -1,12 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
-using BlogApp.Modules.Identity.Domain.Entities;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
-
-namespace BlogApp.Modules.Identity.Infrastructure.Authentication;
+﻿namespace BlogApp.Modules.Identity.Infrastructure.Authentication;
 
 internal sealed class TokenProvider(IOptions<JwtOptions> jwtOptions) : ITokenProvider
 {

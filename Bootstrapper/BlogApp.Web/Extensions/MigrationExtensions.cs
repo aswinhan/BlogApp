@@ -1,8 +1,4 @@
-﻿using BlogApp.Modules.Identity.Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
-using Npgsql; // Needed for exception handling
-
-namespace BlogApp.Web.Extensions;
+﻿namespace BlogApp.Web.Extensions;
 
 public static class MigrationExtensions
 {

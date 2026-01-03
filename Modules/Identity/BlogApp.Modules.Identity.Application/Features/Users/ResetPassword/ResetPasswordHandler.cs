@@ -1,16 +1,9 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Authentication; // For IPasswordHasher
-using BlogApp.Modules.Identity.Application.Abstractions.Data;
-using BlogApp.Shared.Application.Abstractions.Messaging; // <--- Import Custom Interfaces
-using BlogApp.Shared.Domain.Errors;
-using BlogApp.Shared.Domain.Results;
-using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;
+﻿namespace BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;
 
 public class ResetPasswordHandler(
     IIdentityDbContext dbContext,
     IPasswordHasher passwordHasher)
-    : ICommandHandler<ResetPasswordCommand> // <--- Fixed Interface
+    : ICommandHandler<ResetPasswordCommand>
 {
     public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {

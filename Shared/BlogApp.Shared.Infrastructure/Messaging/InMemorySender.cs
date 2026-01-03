@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Reflection;
-
-namespace BlogApp.Shared.Infrastructure.Messaging;
+﻿namespace BlogApp.Shared.Infrastructure.Messaging;
 
 public sealed class InMemorySender(IServiceProvider serviceProvider) : ISender
 {

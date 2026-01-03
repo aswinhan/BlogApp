@@ -12,3 +12,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
 global using BlogApp.Shared.Application.Abstractions.Messaging;
 global using BlogApp.Shared.Presentation.Endpoints;
+global using BlogApp.Modules.Identity.Application.Features.Users.RefreshToken;

@@ -1,7 +1,4 @@
-﻿using BlogApp.Shared.Domain; // Keep your Shared Entity base
-using System.Text.RegularExpressions;
-
-namespace BlogApp.Modules.Identity.Domain.Entities;
+﻿namespace BlogApp.Modules.Identity.Domain.Entities;
 
 public sealed class User : Entity, IAuditableEntity
 {
