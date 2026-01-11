@@ -1,4 +1,7 @@
-﻿global using BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
+﻿global using BlogApp.Modules.Blog.Application.Features.Comments.AddComment;
+global using BlogApp.Modules.Blog.Application.Features.Articles.PublishArticle;
+global using BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
+global using BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 global using BlogApp.Shared.Application.Abstractions.Messaging;
 global using BlogApp.Shared.Domain.Results;
 global using BlogApp.Shared.Presentation.Endpoints;

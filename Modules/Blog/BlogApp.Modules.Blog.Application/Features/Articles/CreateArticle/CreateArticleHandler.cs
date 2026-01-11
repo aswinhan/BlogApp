@@ -19,8 +19,11 @@ internal sealed class CreateArticleHandler(IBlogDbContext context)
             var tagNames = request.Tags.Select(t => t.Trim().ToLowerInvariant()).Distinct().ToList();
 
             // Find existing tags in DB
+            // We must use .AsTracking() here.
+            // If we don't, EF Core thinks these are "New" tags and tries to INSERT them again, causing a crash.
             var existingTags = await context.Tags
                 .Where(t => tagNames.Contains(t.Name))
+                .AsTracking()
                 .ToListAsync(cancellationToken);
 
             foreach (var tagName in tagNames)

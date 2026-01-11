@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Shared.Infrastructure.Messaging;
 
-// 1. Non-Generic Decorator
+// 1. Non-Generic Decorator (Void Command)
 public sealed class ValidationCommandHandler<TCommand>(
     ICommandHandler<TCommand> decorated,
     IEnumerable<IValidator<TCommand>> validators)
@@ -16,29 +16,30 @@ public sealed class ValidationCommandHandler<TCommand>(
 
         var context = new ValidationContext<TCommand>(command);
 
-        // Run all validators in parallel for speed
         var validationResults = await Task.WhenAll(
             validators.Select(v => v.ValidateAsync(context, cancellationToken)));
 
         var failures = validationResults
             .SelectMany(r => r.Errors)
             .Where(f => f != null)
-            .ToArray();
+            .ToList();
 
-        if (failures.Length != 0)
+        if (failures.Count != 0)
         {
             var errors = failures
-                .Select(f => Error.Validation(f.PropertyName, f.ErrorMessage, []))
-                .ToArray();
+                .Select(f => Error.Validation(f.PropertyName, f.ErrorMessage))
+                .ToList();
 
-            return Result.Failure(Error.Validation("Validation.Error", "One or more validation errors occurred", errors));
+            // FIX: Only ONE return statement here.
+            // Returning the first error found.
+            return Result.Failure(errors[0]);
         }
 
         return await decorated.Handle(command, cancellationToken);
     }
 }
 
-// 2. Generic Decorator
+// 2. Generic Decorator (Result<T>)
 public sealed class ValidationCommandHandler<TCommand, TResponse>(
     ICommandHandler<TCommand, TResponse> decorated,
     IEnumerable<IValidator<TCommand>> validators)
@@ -60,17 +61,16 @@ public sealed class ValidationCommandHandler<TCommand, TResponse>(
         var failures = validationResults
             .SelectMany(r => r.Errors)
             .Where(f => f != null)
-            .ToArray();
+            .ToList();
 
-        if (failures.Length != 0)
+        if (failures.Count != 0)
         {
             var errors = failures
-                .Select(f => Error.Validation(f.PropertyName, f.ErrorMessage, []))
-                .ToArray();
+                .Select(f => Error.Validation(f.PropertyName, f.ErrorMessage))
+                .ToList();
 
-            return Result.Failure<TResponse>(
-                Error.Validation("Validation.Error", "One or more validation errors occurred", errors)
-            );
+            // FIX: Using the generic helper method we added to Result.cs
+            return Result.Failure<TResponse>(errors[0]);
         }
 
         return await decorated.Handle(command, cancellationToken);

@@ -15,9 +15,26 @@ public static class ResultExtensions
             detail: result.Error.Description,
             extensions: new Dictionary<string, object?>
             {
-                { "errors", result.Error.Errors } // Return the array of sub-errors
-            }
-        );
+                // We return the error code for frontend logic (e.g. "Article.NotFound")
+                { "code", result.Error.Code }
+            });
+    }
+
+    public static IResult ToProblemDetails<T>(this Result<T> result)
+    {
+        if (result.IsSuccess)
+        {
+            throw new InvalidOperationException("Can't convert success result to problem details");
+        }
+
+        return Results.Problem(
+            statusCode: GetStatusCode(result.Error.Type),
+            title: GetTitle(result.Error.Type),
+            detail: result.Error.Description,
+            extensions: new Dictionary<string, object?>
+            {
+                { "code", result.Error.Code }
+            });
     }
 
     private static int GetStatusCode(ErrorType type) =>

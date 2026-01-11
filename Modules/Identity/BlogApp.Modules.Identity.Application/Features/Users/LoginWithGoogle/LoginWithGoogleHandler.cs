@@ -10,7 +10,7 @@ public class LoginWithGoogleHandler(
     {
         var googleUser = await googleAuthService.ValidateAsync(request.IdToken, cancellationToken);
         if (googleUser is null)
-            return Result.Failure<LoginResponse>(Error.Validation("Auth.InvalidGoogleToken", "Invalid Google ID Token.", []));
+            return Result.Failure<LoginResponse>(Error.Validation("Auth.InvalidGoogleToken", "Invalid Google ID Token."));
 
         var user = await dbContext.Users
             .FirstOrDefaultAsync(u => u.GoogleId == googleUser.GoogleId || u.Email == googleUser.Email, cancellationToken);

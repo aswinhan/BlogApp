@@ -8,6 +8,7 @@ public class ResetPasswordHandler(
     public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users
+            .AsTracking()
             .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
         if (user is null)

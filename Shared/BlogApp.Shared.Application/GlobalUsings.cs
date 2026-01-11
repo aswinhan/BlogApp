@@ -5,3 +5,4 @@ global using System.Reflection;
 global using BlogApp.Shared.Domain.Results;
 global using BlogApp.Shared.Domain.Errors;
 global using BlogApp.Shared.Application.Abstractions.Messaging;
+global using Microsoft.AspNetCore.Http;

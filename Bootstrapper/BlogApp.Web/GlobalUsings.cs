@@ -11,6 +11,7 @@ global using Scalar.AspNetCore;
 global using Serilog;
 global using System.Reflection;
 global using BlogApp.Modules.Identity.Infrastructure.Database;
+global using BlogApp.Modules.Blog.Infrastructure.Database;
 global using Microsoft.EntityFrameworkCore;
 global using Npgsql;
 global using Microsoft.AspNetCore.Diagnostics;

@@ -7,6 +7,7 @@ namespace BlogApp.Modules.Identity.Application.Features.Users.RegisterUser;
 
 // We need this interface first! See step below.
 using BlogApp.Modules.Identity.Application.Abstractions.Data;
+using BlogApp.Shared.Domain.Errors;
 
 internal sealed class RegisterUserHandler(
     IIdentityDbContext context,

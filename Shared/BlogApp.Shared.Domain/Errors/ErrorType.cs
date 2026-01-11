@@ -2,10 +2,12 @@
 
 public enum ErrorType
 {
-    Failure = 0,
-    Validation = 1,
-    NotFound = 2,
-    Conflict = 3,
-    Unauthorized = 4,
-    Forbidden = 5
+    Failure,     // General failure
+    Unexpected,  // Unexpected error (like an exception)
+    Validation,  // Input validation failed
+    Conflict,    // Resource already exists or state conflict
+    NotFound,    // Resource not found
+    Unauthorized,// Authentication failed or missing
+    Forbidden,   // User is authenticated but not allowed
+    Custom       // For custom error types if needed
 }

@@ -1,9 +1,32 @@
-﻿namespace BlogApp.Shared.Infrastructure;
+﻿using BlogApp.Shared.Application.Storage;
+using BlogApp.Shared.Infrastructure.Configuration;
+using BlogApp.Shared.Infrastructure.Email;
+using BlogApp.Shared.Infrastructure.Storage;
+
+namespace BlogApp.Shared.Infrastructure;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services, Assembly[] moduleAssemblies)
     {
+        // 1. Configure Settings
+        services.AddOptions<FileStorageSettings>()
+            .BindConfiguration(FileStorageSettings.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        // 2. Register Service
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+        // 3. Configure SMTP Settings
+        services.AddOptions<SmtpSettings>()
+            .BindConfiguration(SmtpSettings.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        // 4. Register Email Service
+        services.AddTransient<IEmailService, MailKitEmailService>();
+
         // 1. Register Dispatcher
         services.AddScoped<ISender, InMemorySender>();
 

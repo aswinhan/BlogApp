@@ -72,17 +72,17 @@ var app = builder.Build();
 // It automatically handles edge cases for CSP, HSTS, and X-Content-Type.
 var securityPolicy = new HeaderPolicyCollection()
     .AddDefaultSecurityHeaders()
-    .AddContentSecurityPolicy(builder =>
+    .AddContentSecurityPolicy(policy =>
     {
-        builder.AddDefaultSrc().Self();
-        builder.AddScriptSrc().Self().UnsafeInline(); // Needed for Scalar/Swagger sometimes
-        builder.AddFrameAncestors().None(); // Anti-Clickjacking
+        policy.AddDefaultSrc().Self();
+        policy.AddScriptSrc().Self().UnsafeInline(); // Needed for Scalar/Swagger sometimes
+        policy.AddFrameAncestors().None(); // Anti-Clickjacking
     })
-    .AddPermissionsPolicy(builder =>
+    .AddPermissionsPolicy(policy =>
     {
-        builder.AddAccelerometer().None();
-        builder.AddCamera().None();
-        builder.AddGeolocation().None();
+        policy.AddAccelerometer().None();
+        policy.AddCamera().None();
+        policy.AddGeolocation().None();
     });
 
 app.UseSecurityHeaders(securityPolicy);

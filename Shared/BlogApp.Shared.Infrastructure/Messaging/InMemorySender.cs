@@ -38,7 +38,7 @@ public sealed class InMemorySender(IServiceProvider serviceProvider) : ISender
         return await (Task<Result<TResponse>>)method.Invoke(handler, [command, cancellationToken])!;
     }
 
-    public async Task<Result<TResponse>> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
+    public async Task<Result<TResponse>> Send<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
     {
         var queryType = query.GetType();
 

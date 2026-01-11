@@ -5,32 +5,39 @@ public static class MigrationExtensions
     public static void ApplyMigrations(this IApplicationBuilder app)
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
-        using IdentityDbContext dbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
 
+        // 1. Migrate Identity Module
+        using IdentityDbContext identityContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+        ApplyMigrationSafe(identityContext);
+
+        // 2. Migrate Blog Module
+        using BlogDbContext blogContext = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        ApplyMigrationSafe(blogContext);
+    }
+
+    private static void ApplyMigrationSafe(DbContext context)
+    {
         try
         {
-            // Simple retry logic
             int retries = 5;
             while (retries > 0)
             {
                 try
                 {
-                    dbContext.Database.Migrate();
-                    break; // Success! Exit loop.
+                    // Accessing the instance 'context', NOT the class 'DbContext'
+                    context.Database.Migrate();
+                    break;
                 }
                 catch (NpgsqlException)
                 {
                     retries--;
-                    if (retries == 0) throw; // Re-throw if we run out of tries
-
-                    // Wait 2 seconds before retrying
+                    if (retries == 0) throw;
                     Thread.Sleep(2000);
                 }
             }
         }
         catch (Exception ex)
         {
-            // Log the error (optional, but good for debugging)
             Console.WriteLine($"Migration Failed: {ex.Message}");
             throw;
         }
