@@ -1,0 +1,10 @@
+﻿global using BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
+global using BlogApp.Shared.Application.Abstractions.Messaging;
+global using BlogApp.Shared.Domain.Results;
+global using BlogApp.Shared.Presentation.Endpoints;
+global using BlogApp.Shared.Presentation.Extensions;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Routing;
+global using System.Security.Claims;

@@ -24,6 +24,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Aspire\BlogApp.ServiceDefaults\BlogApp.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\..\Modules\Blog\BlogApp.Modules.Blog.Infrastructure\BlogApp.Modules.Blog.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Modules\Blog\BlogApp.Modules.Blog.Presentation\BlogApp.Modules.Blog.Presentation.csproj" />
 		<ProjectReference Include="..\..\Modules\Identity\BlogApp.Modules.Identity.Infrastructure\BlogApp.Modules.Identity.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Modules\Identity\BlogApp.Modules.Identity.Presentation\BlogApp.Modules.Identity.Presentation.csproj" />
 		<ProjectReference Include="..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />

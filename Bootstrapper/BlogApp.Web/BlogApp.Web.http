@@ -60,3 +60,15 @@ Content-Type: application/json
   "token": "<PASTE_TOKEN_FROM_CONSOLE_LOG>",
   "newPassword": "NewP@ssword999!"
 }
+
+### Create Article
+POST {{Host}}/articles
+Authorization: Bearer <PASTE_YOUR_ACCESS_TOKEN_HERE>
+Content-Type: application/json
+
+{
+  "title": "Why Modular Monoliths Rock",
+  "content": "Microservices are complex. Modules are simple.",
+  "summary": "A deep dive into architecture.",
+  "tags": ["architecture", "dotnet", "csharp"]
+}

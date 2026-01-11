@@ -1,0 +1,8 @@
+﻿global using BlogApp.Modules.Blog.Domain.Entities;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using BlogApp.Modules.Blog.Application.Abstractions.Data;
+global using BlogApp.Modules.Blog.Infrastructure.Database;
+global using BlogApp.Shared.Infrastructure.Database;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

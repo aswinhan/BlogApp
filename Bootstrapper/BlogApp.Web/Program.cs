@@ -6,9 +6,12 @@ builder.Host.UseSerilog((context, config) =>
 
 // 1. Module Definitions
 Assembly[] moduleAssemblies = [
+    // Identity Assemblies
     BlogApp.Modules.Identity.Presentation.AssemblyReference.Assembly,
     BlogApp.Modules.Identity.Application.AssemblyReference.Assembly,
-    // Add Blog Assemblies here later
+    // Blog Assemblies
+    BlogApp.Modules.Blog.Presentation.AssemblyReference.Assembly,
+    BlogApp.Modules.Blog.Application.AssemblyReference.Assembly,
 ];
 
 // 2. Shared Services (Clean Architecture)
@@ -21,6 +24,8 @@ builder.Services.AddSharedApplication(moduleAssemblies);
 // We moved the JWT Logic INSIDE this method (See Step 3 below). 
 // Program.cs shouldn't know about "SecretKey" or "TokenValidation".
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
+builder.Services.AddBlogInfrastructure();
+
 
 // 4. Custom Endpoints
 builder.Services.AddEndpoints(moduleAssemblies);

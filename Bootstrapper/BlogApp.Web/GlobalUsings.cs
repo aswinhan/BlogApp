@@ -1,4 +1,5 @@
 ﻿global using BlogApp.Modules.Identity.Infrastructure;
+global using BlogApp.Modules.Blog.Infrastructure;
 global using BlogApp.Shared.Application;    // Keep your existing Application logic
 global using BlogApp.Shared.Infrastructure; // Keep your existing Shared logic
 global using BlogApp.Shared.Presentation.Extensions;
@@ -14,4 +15,3 @@ global using Microsoft.EntityFrameworkCore;
 global using Npgsql;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Mvc;
-global using System.Threading.RateLimiting;

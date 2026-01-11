@@ -1,6 +1,4 @@
-﻿using BlogApp.Shared.Domain.Abstractions;
-
-namespace BlogApp.Modules.Blog.Domain.Entities;
+﻿namespace BlogApp.Modules.Blog.Domain.Entities;
 
 public sealed class Tag : Entity
 {

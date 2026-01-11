@@ -7,6 +7,12 @@
     <Project Path="Bootstrapper/BlogApp.Web/BlogApp.Web.csproj" />
   </Folder>
   <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Blog/">
+    <Project Path="Modules/Blog/BlogApp.Modules.Blog.Application/BlogApp.Modules.Blog.Application.csproj" Id="3267090c-6c32-4ba5-8eb0-25ff016f1ae5" />
+    <Project Path="Modules/Blog/BlogApp.Modules.Blog.Domain/BlogApp.Modules.Blog.Domain.csproj" Id="8c5b455a-ece9-4e89-8791-65b36322fab0" />
+    <Project Path="Modules/Blog/BlogApp.Modules.Blog.Infrastructure/BlogApp.Modules.Blog.Infrastructure.csproj" Id="3465f4f4-e469-4803-b8bd-39090d7baa5f" />
+    <Project Path="Modules/Blog/BlogApp.Modules.Blog.Presentation/BlogApp.Modules.Blog.Presentation.csproj" Id="9bfc6766-fa6d-479b-b371-971da9a34446" />
+  </Folder>
   <Folder Name="/Modules/Identity/">
     <Project Path="Modules/Identity/BlogApp.Modules.Identity.Application/BlogApp.Modules.Identity.Application.csproj" />
     <Project Path="Modules/Identity/BlogApp.Modules.Identity.Domain/BlogApp.Modules.Identity.Domain.csproj" />
