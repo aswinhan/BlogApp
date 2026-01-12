@@ -2,7 +2,7 @@
 
 public class ForgotPasswordHandler(
     IIdentityDbContext dbContext,
-    IEmailService emailService)
+    IEmailService emailService) // Injects the MailKit service from Shared
     : ICommandHandler<ForgotPasswordCommand>
 {
     public async Task<Result> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
@@ -12,6 +12,7 @@ public class ForgotPasswordHandler(
 
         if (user is null)
         {
+            // Security: Don't reveal if email exists
             return Result.Success();
         }
 
@@ -24,7 +25,13 @@ public class ForgotPasswordHandler(
 
         string resetLink = $"https://localhost:7000/reset-password?token={token}&email={request.Email}";
 
-        await emailService.SendPasswordResetEmailAsync(user.Email, resetLink, cancellationToken);
+        // FIX: Use the generic SendAsync method. 
+        // We manually construct the Subject and Body here.
+        await emailService.SendEmailAsync(
+            request.Email,
+            "Reset Your Password",
+            $"Please click the link to reset your password: {resetLink}",
+            cancellationToken);
 
         return Result.Success();
     }

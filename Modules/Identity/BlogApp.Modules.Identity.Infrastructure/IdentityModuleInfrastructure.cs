@@ -2,18 +2,30 @@
 
 public static class IdentityModuleInfrastructure
 {
-    public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddIdentityInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-
+        // 1. Database & Migrations
         services.AddTransient<IModuleDatabaseMigrator, IdentityModuleDatabaseMigrator>();
 
-        // 1. Database (Preserved your cleaner 'AddPostgres' extension)
-        services.AddPostgres<IdentityDbContext>("postgres");
+        // FIX: Use standard AddDbContext. 
+        // Aspire maps "postgres" to the correct connection string automatically.
+        var connectionString = configuration.GetConnectionString("postgres");
+
+        services.AddDbContext<IdentityDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "users");
+            });
+        });
+
+        // Expose the interface for the Application layer
         services.AddScoped<IIdentityDbContext>(sp => sp.GetRequiredService<IdentityDbContext>());
 
-        // 2. PASSWORD SECURITY [UPGRADE]
-        // Switched to Argon2PasswordHasher (I will provide this class next). 
-        // Standard hashing is not enough for "Unhackable" status.
+
+        // 2. PASSWORD SECURITY (Argon2)
         services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         // 3. Token Management
@@ -22,11 +34,9 @@ public static class IdentityModuleInfrastructure
 
         // 4. External Services
         services.AddScoped<IGoogleAuthService, GoogleAuthService>();
-        services.AddScoped<IEmailService, MockEmailService>();
 
-        // 5. AUTHENTICATION & JWT [MOVED FROM PROGRAM.CS]
-        // This makes the Identity Module self-contained. 
-        // Program.cs no longer needs to know your secret keys.
+
+        // 5. AUTHENTICATION & JWT
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

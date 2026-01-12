@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
+﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
+
+namespace BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
 
 internal sealed class LoginUserHandler(
     IIdentityDbContext context,

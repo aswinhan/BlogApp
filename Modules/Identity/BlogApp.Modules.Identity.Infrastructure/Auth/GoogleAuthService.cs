@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure.Auth;
+﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
+
+namespace BlogApp.Modules.Identity.Infrastructure.Auth;
 
 public class GoogleAuthService(
     IConfiguration configuration,

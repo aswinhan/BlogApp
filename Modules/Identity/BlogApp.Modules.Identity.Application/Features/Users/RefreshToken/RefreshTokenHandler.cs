@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Application.Features.Users.RefreshToken;
+﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
+
+namespace BlogApp.Modules.Identity.Application.Features.Users.RefreshToken;
 
 internal sealed class RefreshTokenHandler(
     IIdentityDbContext context,

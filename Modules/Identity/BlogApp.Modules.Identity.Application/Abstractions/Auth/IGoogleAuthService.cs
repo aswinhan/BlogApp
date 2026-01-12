@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Modules.Identity.Application.Abstractions.Authentication;
+﻿namespace BlogApp.Modules.Identity.Application.Abstractions.Auth;
 
 public interface IGoogleAuthService
 {

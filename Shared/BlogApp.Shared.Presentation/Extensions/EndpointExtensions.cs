@@ -13,7 +13,7 @@ public static class EndpointExtensions
 
         foreach (var endpointType in endpointTypes)
         {
-            services.TryAddScoped(typeof(IApiEndpoint), endpointType);
+            services.AddScoped(typeof(IApiEndpoint), endpointType);
         }
 
         return services;

@@ -9,12 +9,15 @@ builder.Host.UseSerilog((context, config) =>
 Assembly[] moduleAssemblies = [
     BlogApp.Modules.Identity.Presentation.AssemblyReference.Assembly,
     BlogApp.Modules.Identity.Application.AssemblyReference.Assembly,
+    BlogApp.Modules.Blog.Presentation.AssemblyReference.Assembly,
     BlogApp.Modules.Blog.Application.AssemblyReference.Assembly
 ];
 
 // 2. Shared Services
 builder.Services.AddSharedInfrastructure(moduleAssemblies, builder.Configuration);
 builder.Services.AddSharedApplication(moduleAssemblies);
+
+builder.Services.AddEndpoints(moduleAssemblies);
 
 // 3. Module Services
 builder.Services.AddIdentityInfrastructure(builder.Configuration);

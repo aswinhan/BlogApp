@@ -5,10 +5,6 @@
 
 namespace BlogApp.Modules.Identity.Application.Features.Users.RegisterUser;
 
-// We need this interface first! See step below.
-using BlogApp.Modules.Identity.Application.Abstractions.Data;
-using BlogApp.Shared.Domain.Errors;
-
 internal sealed class RegisterUserHandler(
     IIdentityDbContext context,
     IPasswordHasher passwordHasher)
@@ -19,13 +15,15 @@ internal sealed class RegisterUserHandler(
         // 1. Check if email exists
         if (await context.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
         {
-            return Result.Failure<Guid>(Error.Conflict("User.Exists", "User with this email already exists"));
+            return Result.Failure<Guid>(
+                Error.Conflict("User.Exists", "User with this email already exists")
+            );
         }
 
         // 2. Hash password
         var passwordHash = passwordHasher.Hash(request.Password);
 
-        // 3. Create Entity
+        // 3. Create Entity (Using Factory Method)
         var user = User.Create(
             request.FirstName,
             request.LastName,
