@@ -1,8 +1,12 @@
-﻿namespace BlogApp.Shared.Infrastructure;
+﻿using BlogApp.Shared.Infrastructure.Caching;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
+
+namespace BlogApp.Shared.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services, Assembly[] moduleAssemblies)
+    public static IServiceCollection AddSharedInfrastructure(this IServiceCollection services, Assembly[] moduleAssemblies, IConfiguration configuration)
     {
         // 1. Configure Settings
         services.AddOptions<FileStorageSettings>()
@@ -24,6 +28,16 @@ public static class DependencyInjection
 
         // 5. Distributed Auth Policies
         services.ConfigureOptions<AuthorizationConfigureOptions>();
+
+        // 6. Redis Caching
+        // We try to connect. If connection string is missing, we might skip or throw.
+        string redisConnectionString = configuration.GetConnectionString("Redis")
+            ?? "localhost:6379"; // Default fallback
+
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+            ConnectionMultiplexer.Connect(redisConnectionString));
+
+        services.AddScoped<ICachingService, RedisCachingService>();
 
         // 1. Register Dispatcher
         services.AddScoped<ISender, InMemorySender>();
@@ -51,6 +65,9 @@ public static class DependencyInjection
             .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
+
+        // Register Caching Decorator
+        services.TryDecorate(typeof(IQueryHandler<,>), typeof(CachingQueryHandler<,>));
 
         // 3. Apply Decorators
         services.TryDecorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandler<>));

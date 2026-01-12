@@ -1,3 +1,4 @@
+using BlogApp.Shared.Infrastructure;
 using BlogApp.Shared.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,7 @@ Assembly[] moduleAssemblies = [
 
 // 2. Shared Services (Clean Architecture)
 // Maintains your Scrutor scanning for MediatR/CQRS
-builder.Services.AddSharedInfrastructure(moduleAssemblies);
+builder.Services.AddSharedInfrastructure(moduleAssemblies, builder.Configuration);
 builder.Services.AddSharedApplication(moduleAssemblies);
 
 // 3. Module Services

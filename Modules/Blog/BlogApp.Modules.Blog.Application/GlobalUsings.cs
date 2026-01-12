@@ -5,3 +5,4 @@ global using BlogApp.Modules.Blog.Domain.Entities;
 global using BlogApp.Shared.Domain.Results;
 global using Microsoft.EntityFrameworkCore;
 global using BlogApp.Shared.Domain.Errors;
+global using BlogApp.Shared.Application.Caching;

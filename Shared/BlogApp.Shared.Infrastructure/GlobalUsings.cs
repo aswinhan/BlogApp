@@ -26,3 +26,7 @@ global using Microsoft.AspNetCore.Authorization;
 global using BlogApp.Shared.Infrastructure.Auth;
 global using BlogApp.Shared.Infrastructure.Email;
 global using BlogApp.Shared.Infrastructure.Storage;
+global using BlogApp.Shared.Application.Caching;
+global using StackExchange.Redis;
+global using System.Text.Json;
+global using BlogApp.Shared.Domain.Pagination;
