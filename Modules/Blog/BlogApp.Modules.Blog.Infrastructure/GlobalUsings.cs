@@ -6,3 +6,6 @@ global using BlogApp.Modules.Blog.Infrastructure.Database;
 global using BlogApp.Shared.Infrastructure.Database;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using BlogApp.Modules.Blog.Domain.Constants;
+global using BlogApp.Shared.Infrastructure.Auth;
+global using Microsoft.AspNetCore.Authorization;

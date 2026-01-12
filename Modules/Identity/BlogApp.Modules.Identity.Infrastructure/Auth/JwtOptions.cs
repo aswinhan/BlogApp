@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure.Authentication;
+﻿namespace BlogApp.Modules.Identity.Infrastructure.Auth;
 
 public class JwtOptions
 {

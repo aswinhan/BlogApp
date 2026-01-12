@@ -22,3 +22,7 @@ global using BlogApp.Shared.Application.Email;
 global using MailKit.Net.Smtp;
 global using MailKit.Security;
 global using MimeKit;
+global using Microsoft.AspNetCore.Authorization;
+global using BlogApp.Shared.Infrastructure.Auth;
+global using BlogApp.Shared.Infrastructure.Email;
+global using BlogApp.Shared.Infrastructure.Storage;

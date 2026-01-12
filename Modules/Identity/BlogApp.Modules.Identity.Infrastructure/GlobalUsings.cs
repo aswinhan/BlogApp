@@ -2,7 +2,7 @@
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using BlogApp.Modules.Identity.Application.Abstractions.Authentication;
-global using BlogApp.Modules.Identity.Infrastructure.Authentication;
+global using BlogApp.Modules.Identity.Infrastructure.Auth;
 global using BlogApp.Modules.Identity.Infrastructure.Database;
 global using BlogApp.Shared.Infrastructure.Database;
 global using Microsoft.Extensions.Configuration;
@@ -20,3 +20,6 @@ global using BlogApp.Modules.Identity.Infrastructure.Services;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Isopoh.Cryptography.Argon2;
 global using System.Security.Cryptography;
+global using BlogApp.Shared.Infrastructure.Auth;
+global using Microsoft.AspNetCore.Authorization;
+global using BlogApp.Modules.Identity.Domain.Constants;

@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
+﻿using BlogApp.Modules.Blog.Domain.Constants;
+
+namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
 public class PublishArticleEndpoint : IEndpoint
 {
@@ -29,7 +31,7 @@ public class PublishArticleEndpoint : IEndpoint
             return Results.NoContent(); // 204 No Content (Standard for Updates)
         })
         .WithTags("Articles")
-        .RequireAuthorization()
+        .RequireAuthorization(BlogPolicyConsts.PublishArticle)
         .WithSummary("Publish a draft article");
     }
 }

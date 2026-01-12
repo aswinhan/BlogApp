@@ -1,3 +1,5 @@
+using BlogApp.Shared.Infrastructure.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // [OPTIMIZATION 1] Structured Logging (Better than default Console)
@@ -92,7 +94,11 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
-    app.ApplyMigrations();
+    using (var scope = app.Services.CreateScope())
+    {
+        // This single line migrates Identity, Blog, and any future modules!
+        await scope.MigrateModuleDatabasesAsync();
+    }
     app.MapScalarApiReference();
 }
 

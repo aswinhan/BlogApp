@@ -1,9 +1,4 @@
-﻿using BlogApp.Shared.Application.Storage;
-using BlogApp.Shared.Infrastructure.Configuration;
-using BlogApp.Shared.Infrastructure.Email;
-using BlogApp.Shared.Infrastructure.Storage;
-
-namespace BlogApp.Shared.Infrastructure;
+﻿namespace BlogApp.Shared.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -26,6 +21,9 @@ public static class DependencyInjection
 
         // 4. Register Email Service
         services.AddTransient<IEmailService, MailKitEmailService>();
+
+        // 5. Distributed Auth Policies
+        services.ConfigureOptions<AuthorizationConfigureOptions>();
 
         // 1. Register Dispatcher
         services.AddScoped<ISender, InMemorySender>();

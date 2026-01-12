@@ -1,9 +1,14 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure;
+﻿using BlogApp.Modules.Identity.Infrastructure.Auth;
+
+namespace BlogApp.Modules.Identity.Infrastructure;
 
 public static class IdentityModule
 {
     public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+
+        services.AddTransient<IModuleDatabaseMigrator, IdentityModuleDatabaseMigrator>();
+
         // 1. Database (Preserved your cleaner 'AddPostgres' extension)
         services.AddPostgres<IdentityDbContext>("postgres");
         services.AddScoped<IIdentityDbContext>(sp => sp.GetRequiredService<IdentityDbContext>());
