@@ -22,6 +22,7 @@ public sealed class Article : Entity, IAuditableEntity
     public string Title { get; private set; }
     public string Content { get; private set; }
     public string? Summary { get; private set; }
+    public string? CoverImageUrl { get; private set; }
     public ArticleStatus Status { get; private set; }
 
     public DateTime CreatedOnUtc { get; set; }
@@ -72,5 +73,11 @@ public sealed class Article : Entity, IAuditableEntity
     {
         var comment = Comment.Create(Id, userId, content);
         _comments.Add(comment);
+    }
+
+    public void UpdateCover(string? imageUrl)
+    {
+        CoverImageUrl = imageUrl;
+        ModifiedOnUtc = DateTime.UtcNow;
     }
 }

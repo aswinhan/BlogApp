@@ -1,4 +1,6 @@
 
+using BlogApp.ServiceDefaults;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // [OPTIMIZATION 1] Structured Logging
@@ -53,7 +55,10 @@ var app = builder.Build();
 
 // --- HTTP Request Pipeline ---
 
-// 1. Security Headers
+// 1. Enable SeriLog Request Logging
+app.UseSerilogRequestLogging();
+
+// 2. Security Headers
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
@@ -63,13 +68,13 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// 2. Rate Limiting (Must be early)
+// 3. Rate Limiting (Must be early)
 app.UseRateLimiter();
 
-// 3. Exception Handling
+// 4. Exception Handling
 app.UseExceptionHandler();
 
-// 4. Swagger (Development Only)
+// 5. Swagger (Development Only)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocumentation();
@@ -81,11 +86,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 5. Auth
+// 6. Auth
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 6. Map All Endpoints
+// 7. Static Files
+app.UseStaticFiles();
+
+// 8. Maps /health and /alive for Aspire Dashboard
+app.MapDefaultEndpoints();
+
+// 9. Map All Endpoints
 app.MapApiEndpoints();
 
 app.Run();

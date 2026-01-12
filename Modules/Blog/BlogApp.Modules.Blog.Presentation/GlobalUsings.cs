@@ -12,3 +12,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Routing;
 global using System.Security.Claims;
 global using BlogApp.Modules.Blog.Domain.Constants;
+global using BlogApp.Modules.Blog.Application.Abstractions.Data;
+global using BlogApp.Shared.Application.Storage;
+global using Microsoft.EntityFrameworkCore;

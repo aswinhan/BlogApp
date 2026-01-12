@@ -13,3 +13,4 @@ global using BlogApp.Shared.Infrastructure.Database;
 global using BlogApp.Shared.Infrastructure.Swagger;
 global using System.Text.Json.Serialization;
 global using System.Threading.RateLimiting;
+global using BlogApp.Shared.Application.Exceptions;
