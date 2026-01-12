@@ -1,8 +1,6 @@
-﻿using BlogApp.Modules.Identity.Infrastructure.Auth;
+﻿namespace BlogApp.Modules.Identity.Infrastructure;
 
-namespace BlogApp.Modules.Identity.Infrastructure;
-
-public static class IdentityModule
+public static class IdentityModuleInfrastructure
 {
     public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {

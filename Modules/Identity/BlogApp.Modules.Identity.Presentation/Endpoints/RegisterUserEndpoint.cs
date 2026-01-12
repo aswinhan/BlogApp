@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class RegisterUserEndpoint : IEndpoint
+public class RegisterUserEndpoint : IApiEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

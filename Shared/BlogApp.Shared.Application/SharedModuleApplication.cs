@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Shared.Application;
 
-public static class DependencyInjection
+public static class SharedModuleApplication
 {
     public static IServiceCollection AddSharedApplication(this IServiceCollection services, Assembly[] moduleAssemblies)
     {

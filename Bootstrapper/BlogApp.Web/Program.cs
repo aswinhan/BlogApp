@@ -1,114 +1,88 @@
-using BlogApp.Shared.Infrastructure;
-using BlogApp.Shared.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// [OPTIMIZATION 1] Structured Logging (Better than default Console)
+// [OPTIMIZATION 1] Structured Logging
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
 
-// 1. Module Definitions
+// 1. Module Discovery
 Assembly[] moduleAssemblies = [
-    // Identity Assemblies
     BlogApp.Modules.Identity.Presentation.AssemblyReference.Assembly,
     BlogApp.Modules.Identity.Application.AssemblyReference.Assembly,
-    // Blog Assemblies
-    BlogApp.Modules.Blog.Presentation.AssemblyReference.Assembly,
-    BlogApp.Modules.Blog.Application.AssemblyReference.Assembly,
+    BlogApp.Modules.Blog.Application.AssemblyReference.Assembly
 ];
 
-// 2. Shared Services (Clean Architecture)
-// Maintains your Scrutor scanning for MediatR/CQRS
+// 2. Shared Services
 builder.Services.AddSharedInfrastructure(moduleAssemblies, builder.Configuration);
 builder.Services.AddSharedApplication(moduleAssemblies);
 
 // 3. Module Services
-// [OPTIMIZATION 2] Encapsulation
-// We moved the JWT Logic INSIDE this method (See Step 3 below). 
-// Program.cs shouldn't know about "SecretKey" or "TokenValidation".
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
-builder.Services.AddBlogInfrastructure();
+builder.Services.AddBlogInfrastructure(builder.Configuration);
 
-
-// 4. Custom Endpoints
-builder.Services.AddEndpoints(moduleAssemblies);
-
-// 5. API & Open API
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi("v1");
+// 4. Global API Handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-// 6. Advanced Rate Limiting (Anti-DDoS)
+// [OPTIMIZATION 2] Advanced Rate Limiting (Anti-DDoS)
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-
-    // Strict Policy for Auth (Login/Register) - 5 attempts per min
-    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    options.AddFixedWindowLimiter("fixed", policy =>
     {
-        opt.PermitLimit = 5;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueLimit = 0;
-    });
-
-    // Global Policy - Token Bucket is better for smooth traffic
-    options.AddTokenBucketLimiter("GlobalPolicy", opt =>
-    {
-        opt.TokenLimit = 100;
-        opt.TokensPerPeriod = 10;
-        opt.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-        opt.QueueLimit = 5;
+        policy.PermitLimit = 100; // 100 requests
+        policy.Window = TimeSpan.FromMinutes(1); // per minute
+        policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        policy.QueueLimit = 5;
     });
 });
 
-// 7. High-Performance JSON
+// [OPTIMIZATION 3] High-Performance JSON
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    // Serialize Enums as Strings (Readable)
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    // Ignore null values to save bandwidth
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 var app = builder.Build();
 
-// [OPTIMIZATION 3] Professional Security Headers (Replaces your manual app.Use)
-// This uses the NuGet 'NetEscapades.AspNetCore.SecurityHeaders'
-// It automatically handles edge cases for CSP, HSTS, and X-Content-Type.
-var securityPolicy = new HeaderPolicyCollection()
-    .AddDefaultSecurityHeaders()
-    .AddContentSecurityPolicy(policy =>
-    {
-        policy.AddDefaultSrc().Self();
-        policy.AddScriptSrc().Self().UnsafeInline(); // Needed for Scalar/Swagger sometimes
-        policy.AddFrameAncestors().None(); // Anti-Clickjacking
-    })
-    .AddPermissionsPolicy(policy =>
-    {
-        policy.AddAccelerometer().None();
-        policy.AddCamera().None();
-        policy.AddGeolocation().None();
-    });
+// --- HTTP Request Pipeline ---
 
-app.UseSecurityHeaders(securityPolicy);
-
-// 8. Pipeline Order (Critical for Security)
-app.UseExceptionHandler();
-
-if (app.Environment.IsDevelopment())
+// 1. Security Headers
+app.Use(async (context, next) =>
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        // This single line migrates Identity, Blog, and any future modules!
-        await scope.MigrateModuleDatabasesAsync();
-    }
-    app.MapScalarApiReference();
-}
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    await next();
+});
 
-app.UseHttpsRedirection(); // Force SSL
-app.UseAuthentication();
-app.UseAuthorization();
+// 2. Rate Limiting (Must be early)
 app.UseRateLimiter();
 
-// 9. Map Endpoints
-app.MapEndpoints();
+// 3. Exception Handling
+app.UseExceptionHandler();
+
+// 4. Swagger (Development Only)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerDocumentation();
+
+    // Auto-Migrate Databases
+    using var scope = app.Services.CreateScope();
+    await scope.MigrateModuleDatabasesAsync();
+}
+
+app.UseHttpsRedirection();
+
+// 5. Auth
+app.UseAuthentication();
+app.UseAuthorization();
+
+// 6. Map All Endpoints
+app.MapApiEndpoints();
 
 app.Run();

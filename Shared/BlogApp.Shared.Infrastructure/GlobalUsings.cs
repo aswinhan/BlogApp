@@ -30,3 +30,8 @@ global using BlogApp.Shared.Application.Caching;
 global using StackExchange.Redis;
 global using System.Text.Json;
 global using BlogApp.Shared.Domain.Pagination;
+global using BlogApp.Shared.Infrastructure.Caching;
+global using BlogApp.Shared.Infrastructure.Swagger;
+global using Microsoft.AspNetCore.Builder;
+global using NSwag;
+global using NSwag.Generation.Processors.Security;

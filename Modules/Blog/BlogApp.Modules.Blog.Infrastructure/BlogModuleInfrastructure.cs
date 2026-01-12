@@ -1,8 +1,8 @@
 ﻿namespace BlogApp.Modules.Blog.Infrastructure;
 
-public static class BlogModule
+public static class BlogModuleInfrastructure
 {
-    public static IServiceCollection AddBlogInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddBlogInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddTransient<IModuleDatabaseMigrator, BlogModuleDatabaseMigrator>();
 

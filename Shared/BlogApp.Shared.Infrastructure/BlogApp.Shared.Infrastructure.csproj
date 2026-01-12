@@ -13,6 +13,7 @@
 	<ItemGroup>
 		<PackageReference Include="MailKit" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<PackageReference Include="NSwag.AspNetCore" />
 		<PackageReference Include="Scrutor" />
 		<PackageReference Include="StackExchange.Redis" />
 	</ItemGroup>

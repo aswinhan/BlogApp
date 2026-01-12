@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Identity.Application;
 
-public static class IdentityModule
+public static class IdentityModuleApplication
 {
     public static IServiceCollection AddIdentityApplication(this IServiceCollection services)
     {

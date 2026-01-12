@@ -1,8 +1,6 @@
-﻿using BlogApp.Modules.Blog.Domain.Constants;
+﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
-namespace BlogApp.Modules.Blog.Presentation.Endpoints;
-
-public class PublishArticleEndpoint : IEndpoint
+public class PublishArticleEndpoint : IApiEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
