@@ -1,4 +1,5 @@
 ﻿global using BlogApp.Modules.Blog.Application.Features.Comments.AddComment;
+global using BlogApp.Modules.Blog.Application.Features.Comments.GetComments;
 global using BlogApp.Modules.Blog.Application.Features.Articles.PublishArticle;
 global using BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
 global using BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
@@ -21,3 +22,5 @@ global using BlogApp.Modules.Blog.Application.Features.Tags.DeleteTag;
 global using BlogApp.Modules.Blog.Application.Features.Tags.GetTags;
 global using BlogApp.Modules.Blog.Application.Features.Categories.CreateCategory;
 global using BlogApp.Modules.Blog.Application.Features.Categories.GetCategories;
+global using BlogApp.Modules.Blog.Application.Features.Articles.ToggleLike;
+global using BlogApp.Modules.Blog.Application.Features.Articles.GetArticles;

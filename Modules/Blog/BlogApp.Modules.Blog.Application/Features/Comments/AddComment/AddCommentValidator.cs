@@ -6,6 +6,5 @@ public class AddCommentValidator : AbstractValidator<AddCommentCommand>
     {
         RuleFor(c => c.Content).NotEmpty().MaximumLength(1000);
         RuleFor(c => c.ArticleId).NotEmpty();
-        RuleFor(c => c.UserId).NotEmpty();
     }
 }

@@ -1,4 +1,4 @@
 ﻿namespace BlogApp.Modules.Blog.Application.Features.Comments.AddComment;
 
-// Return the Guid of the new comment
-public record AddCommentCommand(Guid ArticleId, Guid UserId, string Content) : ICommand<Guid>;
+// We return the CommentID so the UI can highlight it
+public sealed record AddCommentCommand(Guid ArticleId, string Content) : ICommand<Guid>;

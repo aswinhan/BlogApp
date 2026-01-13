@@ -3,6 +3,7 @@ using System;
 using BlogApp.Modules.Blog.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlogApp.Modules.Blog.Infrastructure.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    partial class BlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260113174001_AddCommentsTable")]
+    partial class AddCommentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,9 +95,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<long>("ViewCount")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -103,19 +103,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Articles", "blog");
-                });
-
-            modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.ArticleLike", b =>
-                {
-                    b.Property<Guid>("ArticleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ArticleId", "UserId");
-
-                    b.ToTable("ArticleLikes", "blog");
                 });
 
             modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Category", b =>
@@ -238,15 +225,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.ArticleLike", b =>
-                {
-                    b.HasOne("BlogApp.Modules.Blog.Domain.Entities.Article", null)
-                        .WithMany()
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Comment", b =>

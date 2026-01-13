@@ -111,4 +111,11 @@ public sealed class Article : Entity, IAuditableEntity, ISoftDeletable
         var comment = Comment.Create(Id, userId, content);
         _comments.Add(comment);
     }
+
+    public long ViewCount { get; private set; }
+
+    public void IncrementViewCount()
+    {
+        ViewCount++;
+    }
 }

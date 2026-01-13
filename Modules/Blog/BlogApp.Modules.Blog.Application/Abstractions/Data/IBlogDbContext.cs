@@ -9,6 +9,7 @@ public interface IBlogDbContext
     DbSet<Comment> Comments { get; }
     DbSet<Tag> Tags { get; }
     DbSet<Category> Categories { get; }
+    DbSet<ArticleLike> ArticleLikes { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

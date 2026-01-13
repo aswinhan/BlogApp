@@ -1,29 +1,32 @@
 ﻿namespace BlogApp.Modules.Blog.Application.Features.Comments.AddComment;
 
-internal sealed class AddCommentHandler(IBlogDbContext context)
+internal sealed class AddCommentHandler(
+    IBlogDbContext context,
+    ICurrentUser currentUser)
     : ICommandHandler<AddCommentCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AddCommentCommand request, CancellationToken ct)
     {
-        // 1. Fetch Parent (NO TRACKING needed)
-        // We only need to check if it exists. We are not changing the Article itself.
+        // 1. Verify Article Exists
         var article = await context.Articles
-            .FirstOrDefaultAsync(a => a.Id == request.ArticleId, cancellationToken);
+            .FirstOrDefaultAsync(a => a.Id == request.ArticleId, ct);
 
-        if (article is null) return Result.Failure<Guid>(Error.NotFound("Article.NotFound", "Article not found"));
+        if (article is null)
+        {
+            return Result.Failure<Guid>(Error.NotFound("Article.NotFound", "Article not found"));
+        }
 
-        // 2. Create the New Entity (Domain Logic)
-        // We use the Domain Method to ensure rules are followed, but we grab the result.
-        article.AddComment(request.UserId, request.Content);
-        var newComment = article.Comments.Last();
+        // 2. Create Comment
+        // We use the Domain Method on Article to encapsulate logic (if you added it to Article.cs)
+        // OR we can add it directly to the DbSet. 
+        // Using the Article method is cleaner if you have it: article.AddComment(...)
 
-        // 3. EXPLICIT ADD (Pattern 1)
-        // Consistent with CreateArticleHandler
-        context.Comments.Add(newComment);
+        // Let's use the direct approach for flexibility here:
+        var comment = Comment.Create(request.ArticleId, currentUser.UserId, request.Content);
 
-        // 4. Save
-        await context.SaveChangesAsync(cancellationToken);
+        context.Comments.Add(comment);
+        await context.SaveChangesAsync(ct);
 
-        return newComment.Id;
+        return Result.Success(comment.Id);
     }
 }

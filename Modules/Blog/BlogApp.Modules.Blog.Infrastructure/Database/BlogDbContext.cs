@@ -9,6 +9,7 @@ public class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbContext(
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<ArticleLike> ArticleLikes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

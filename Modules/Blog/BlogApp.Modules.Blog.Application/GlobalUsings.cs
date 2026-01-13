@@ -8,3 +8,5 @@ global using BlogApp.Shared.Domain.Errors;
 global using BlogApp.Shared.Application.Caching;
 global using BlogApp.Shared.Application.Abstractions.Auth;
 global using BlogApp.Shared.Domain.Utilities;
+global using BlogApp.Modules.Blog.Application.Features.Categories.GetCategories;
+global using BlogApp.Shared.Domain.Pagination;
