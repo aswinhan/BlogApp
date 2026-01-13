@@ -7,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration));
 
+// Add Aspire Service Defaults This registers HealthChecks
+builder.AddServiceDefaults();
+builder.Services.AddHttpContextAccessor();
+
 // 1. Module Discovery
 Assembly[] moduleAssemblies = [
     BlogApp.Modules.Identity.Presentation.AssemblyReference.Assembly,

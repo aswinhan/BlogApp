@@ -29,6 +29,7 @@ public static class SharedModuleInfrastructure
 
         // 3. Mediator (Scrutor Scanning)
         services.AddScoped<ISender, InMemorySender>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         services.Scan(scan => scan
             .FromAssemblies(moduleAssemblies)

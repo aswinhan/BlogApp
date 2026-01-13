@@ -1,16 +1,32 @@
-﻿namespace BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
+﻿
+namespace BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 
-internal sealed class CreateArticleHandler(IBlogDbContext context)
-    : ICommandHandler<CreateArticleCommand, Guid>
+internal sealed class CreateArticleHandler(IBlogDbContext context,ICurrentUser currentUser)
+    : ICommandHandler<CreateArticleCommand, CreateArticleResponse>
 {
-    public async Task<Result<Guid>> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CreateArticleResponse>> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
     {
-        // 1. Create the Article
+        // 1. Generate Base Slug
+        string baseSlug = SlugGenerator.Generate(request.Title);
+        string finalSlug = baseSlug;
+        int counter = 1;
+
+        // 2. Check for Uniqueness (Simple Loop)
+        // In a massive system, we might use a separate index or unique constraint catch
+        while (await context.Articles.AnyAsync(a => a.Slug == finalSlug, cancellationToken))
+        {
+            finalSlug = $"{baseSlug}-{counter}";
+            counter++;
+        }
+
+        // 3. Create the Article
         var article = Article.Create(
-            request.AuthorId,
+            currentUser.UserId,
             request.Title,
             request.Content,
-            request.Summary);
+            request.Summary,
+            finalSlug,
+            request.CategoryId);
 
         // 2. Handle Tags (Dedup logic)
         if (request.Tags.Count != 0)
@@ -45,6 +61,6 @@ internal sealed class CreateArticleHandler(IBlogDbContext context)
         context.Articles.Add(article);
         await context.SaveChangesAsync(cancellationToken);
 
-        return article.Id;
+        return Result.Success(new CreateArticleResponse(article.Id, finalSlug));
     }
 }

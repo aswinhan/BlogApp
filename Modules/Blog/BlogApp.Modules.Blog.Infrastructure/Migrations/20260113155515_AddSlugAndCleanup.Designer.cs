@@ -3,6 +3,7 @@ using System;
 using BlogApp.Modules.Blog.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlogApp.Modules.Blog.Infrastructure.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    partial class BlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260113155515_AddSlugAndCleanup")]
+    partial class AddSlugAndCleanup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +48,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("AuthorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
@@ -94,48 +94,10 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("Slug")
                         .IsUnique();
 
                     b.ToTable("Articles", "blog");
-                });
-
-            modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Category", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedOnUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
-
-                    b.ToTable("Categories", "blog");
                 });
 
             modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Comment", b =>
@@ -208,16 +170,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Article", b =>
-                {
-                    b.HasOne("BlogApp.Modules.Blog.Domain.Entities.Category", "Category")
-                        .WithMany("Articles")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Comment", b =>
                 {
                     b.HasOne("BlogApp.Modules.Blog.Domain.Entities.Article", null)
@@ -230,11 +182,6 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
             modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Article", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("BlogApp.Modules.Blog.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Articles");
                 });
 #pragma warning restore 612, 618
         }

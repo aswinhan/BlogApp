@@ -8,6 +8,7 @@ public interface IBlogDbContext
     DbSet<Article> Articles { get; }
     DbSet<Comment> Comments { get; }
     DbSet<Tag> Tags { get; }
+    DbSet<Category> Categories { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

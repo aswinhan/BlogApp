@@ -35,3 +35,5 @@ global using BlogApp.Shared.Infrastructure.Swagger;
 global using Microsoft.AspNetCore.Builder;
 global using NSwag;
 global using NSwag.Generation.Processors.Security;
+global using System.Security.Claims;
+global using BlogApp.Shared.Application.Abstractions.Auth;

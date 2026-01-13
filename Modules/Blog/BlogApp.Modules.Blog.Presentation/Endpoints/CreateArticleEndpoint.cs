@@ -5,46 +5,37 @@ public class CreateArticleEndpoint : IApiEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("articles", async (
-            [FromBody] CreateArticleRequest request,
+            CreateArticleRequest request,
             ISender sender,
-            HttpContext context,
             CancellationToken cancellationToken) =>
         {
-            // 1. Extract User ID from JWT
-            // The "sub" claim contains the Guid. 
-            // If extracting fails, we return Unauthorized (or let middleware handle it).
-            var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
-            {
-                return Results.Unauthorized();
-            }
 
-            // 2. Create Command
             var command = new CreateArticleCommand(
-                userId,
                 request.Title,
                 request.Content,
                 request.Summary,
+                request.CategoryId,
                 request.Tags ?? []);
 
-            // 3. Send
-            Result<Guid> result = await sender.Send(command, cancellationToken);
+            Result<CreateArticleResponse> result = await sender.Send(command, cancellationToken);
 
             if (result.IsFailure)
             {
                 return result.ToProblemDetails();
             }
 
-            return Results.Ok(new { ArticleId = result.Value });
+            return Results.Ok(result.Value);
         })
         .WithTags("Articles")
-        .RequireAuthorization() // <--- CRITICAL: Only logged-in users
-        .WithSummary("Create a new draft article");
+        .RequireAuthorization()
+        .WithSummary("Create a new article");
     }
-}
 
-public record CreateArticleRequest(
-    string Title,
-    string Content,
-    string? Summary,
-    List<string>? Tags);
+    // Helper Record to match the incoming JSON body
+    public record CreateArticleRequest(
+        string Title,
+        string Content,
+        string? Summary,
+        Guid? CategoryId,
+        List<string>? Tags);
+}

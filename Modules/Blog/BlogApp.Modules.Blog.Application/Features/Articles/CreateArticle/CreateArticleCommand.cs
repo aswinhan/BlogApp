@@ -1,9 +1,11 @@
 ﻿namespace BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 
-// We return the Guid of the created article
-public record CreateArticleCommand(
-    Guid AuthorId, // In a real app, we extract this from the JWT (Claims)
+public sealed record CreateArticleCommand(
     string Title,
     string Content,
     string? Summary,
-    List<string> Tags) : ICommand<Guid>;
+    Guid? CategoryId,
+    List<string> Tags) : ICommand<CreateArticleResponse>;
+
+// Define the response DTO
+public sealed record CreateArticleResponse(Guid Id, string Slug);

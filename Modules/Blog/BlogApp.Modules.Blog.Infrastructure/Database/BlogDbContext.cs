@@ -1,10 +1,14 @@
-﻿namespace BlogApp.Modules.Blog.Infrastructure.Database;
+﻿using BlogApp.Shared.Domain.Abstractions;
+using System.Linq.Expressions;
+
+namespace BlogApp.Modules.Blog.Infrastructure.Database;
 
 public class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbContext(options), IBlogDbContext
 {
     public DbSet<Article> Articles { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

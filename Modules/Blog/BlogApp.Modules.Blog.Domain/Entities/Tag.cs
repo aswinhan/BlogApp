@@ -1,24 +1,33 @@
 ﻿namespace BlogApp.Modules.Blog.Domain.Entities;
 
-public sealed class Tag : Entity
+public sealed class Tag : Entity, IAuditableEntity
 {
-    private Tag() { } // EF Core
+    private readonly List<Article> _articles = [];
 
-    private Tag(string name) : base(Guid.NewGuid())
+    private Tag(Guid id, string name) : base(id)
     {
         Name = name;
     }
 
+    // Default constructor for EF Core
+    private Tag() { }
+
     public string Name { get; private set; }
 
-    // Relationship: Many-to-Many with Articles
-    public List<Article> Articles { get; } = [];
+    // Relationships
+    public IReadOnlyCollection<Article> Articles => _articles.AsReadOnly();
+
+    // Auditing
+    public DateTime CreatedOnUtc { get; set; }
+    public DateTime? ModifiedOnUtc { get; set; }
 
     public static Tag Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Tag name cannot be empty");
+        {
+            throw new ArgumentException("Tag name cannot be empty", nameof(name));
+        }
 
-        return new Tag(name.Trim().ToLowerInvariant());
+        return new Tag(Guid.NewGuid(), name.Trim().ToLowerInvariant());
     }
 }

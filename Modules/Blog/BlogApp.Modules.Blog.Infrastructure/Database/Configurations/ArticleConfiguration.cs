@@ -8,7 +8,13 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
 
         builder.Property(a => a.Title).HasMaxLength(200);
         builder.Property(a => a.Summary).HasMaxLength(500);
-        builder.Property(a => a.Content).HasColumnType("text"); // Unlimited text
+        builder.Property(a => a.Content).HasColumnType("text");
+
+        builder.Property(a => a.Slug).HasMaxLength(200).IsRequired();
+        builder.HasIndex(a => a.Slug).IsUnique();
+
+        builder.Property(a => a.IsDeleted).HasDefaultValue(false);
+        builder.Property(a => a.DeletedOnUtc);
 
         // Enum stored as Integer (Fast) or String (Readable). 
         // Let's use string for clarity in the DB.
@@ -25,5 +31,10 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
         builder.HasMany(a => a.Tags)
                .WithMany(t => t.Articles)
                .UsingEntity(j => j.ToTable("ArticleTags")); // EF manages the join table automatically
+
+
+        // THE QUERY FILTER
+        // "Whenever you ask for Articles, automatically add 'WHERE IsDeleted = false' to the SQL"
+        builder.HasQueryFilter(a => !a.IsDeleted);
     }
 }
