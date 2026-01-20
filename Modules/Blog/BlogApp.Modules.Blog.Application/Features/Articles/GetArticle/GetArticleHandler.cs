@@ -1,8 +1,11 @@
-﻿namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
+﻿using BlogApp.Shared.Application.Abstractions.PublicApi;
+
+namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
 
 internal sealed class GetArticleHandler(
     IBlogDbContext context,
-    ICurrentUser currentUser)
+    ICurrentUser currentUser,
+    IUserApi userApi)
     : IQueryHandler<GetArticleQuery, ArticleResponse>
 {
     public async Task<Result<ArticleResponse>> Handle(GetArticleQuery request, CancellationToken cancellationToken)
@@ -48,6 +51,12 @@ internal sealed class GetArticleHandler(
 
         await Task.WhenAll(likeCountTask, isLikedByMeTask);
 
+        // FETCH AUTHOR INFO
+        var author = await userApi.GetUserAsync(article.AuthorId, cancellationToken);
+        string authorName = author is not null
+            ? $"{author.FirstName} {author.LastName}"
+            : "Unknown Author";
+
         // 4. MAP & RETURN
         var response = new ArticleResponse(
             article.Id,
@@ -66,7 +75,8 @@ internal sealed class GetArticleHandler(
                 : new CategoryResponse(article.Category.Id, article.Category.Name, article.Category.Slug),
             article.Tags.Select(t => t.Name).ToList(),
             article.CreatedOnUtc,
-            article.PublishedOnUtc
+            article.PublishedOnUtc,
+            authorName
         );
 
         return Result.Success(response);

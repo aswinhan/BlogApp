@@ -10,3 +10,6 @@ global using BlogApp.Shared.Application.Abstractions.Auth;
 global using BlogApp.Shared.Domain.Utilities;
 global using BlogApp.Modules.Blog.Application.Features.Categories.GetCategories;
 global using BlogApp.Shared.Domain.Pagination;
+global using BlogApp.Shared.Application.Abstractions.PublicApi;
+global using BlogApp.Shared.Application.Storage;
+global using Microsoft.AspNetCore.Http;

@@ -34,4 +34,8 @@
 		<ProjectReference Include="..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+
 </Project>

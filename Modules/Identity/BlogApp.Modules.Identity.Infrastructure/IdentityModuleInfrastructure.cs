@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure;
+﻿using BlogApp.Modules.Identity.Infrastructure.PublicApi;
+
+namespace BlogApp.Modules.Identity.Infrastructure;
 
 public static class IdentityModuleInfrastructure
 {
@@ -55,6 +57,10 @@ public static class IdentityModuleInfrastructure
 
         // 6. Authorization Policies
         services.AddAuthorization();
+
+        // 7. Public API Implementations
+        services.AddScoped<IUserApi, UserApi>();
+
 
         return services;
     }

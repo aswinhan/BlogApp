@@ -17,4 +17,5 @@ public sealed record ArticleResponse(
     CategoryResponse? Category,
     List<string> Tags,
     DateTime CreatedOnUtc,
-    DateTime? PublishedOnUtc);
+    DateTime? PublishedOnUtc,
+    string AuthorName);

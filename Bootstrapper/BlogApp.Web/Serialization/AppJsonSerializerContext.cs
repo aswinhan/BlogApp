@@ -1,6 +1,7 @@
 ﻿using BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 using BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
 using BlogApp.Modules.Blog.Application.Features.Articles.GetArticles;
+using BlogApp.Modules.Blog.Application.Features.Articles.GetMyArticles;
 using BlogApp.Modules.Blog.Application.Features.Articles.PublishArticle;
 using BlogApp.Modules.Blog.Application.Features.Categories.GetCategories;
 using BlogApp.Modules.Blog.Application.Features.Comments.AddComment;
@@ -45,6 +46,9 @@ namespace BlogApp.Web.Serialization;
 [JsonSerializable(typeof(PublishArticleCommand))]
 [JsonSerializable(typeof(CreateArticleEndpoint.CreateArticleRequest))]
 [JsonSerializable(typeof(UpdateArticleEndpoint.UpdateRequest))]
+[JsonSerializable(typeof(PagedList<DashboardArticleResponse>))]
+[JsonSerializable(typeof(DashboardArticleResponse))]
+[JsonSerializable(typeof(GetMyArticlesEndpoint.GetMyArticlesRequest))]
 
 // 4. Blog DTOs (Comments)
 [JsonSerializable(typeof(AddCommentCommand))]
