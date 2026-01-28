@@ -2,7 +2,7 @@
 
 public static class BlogModuleApplication
 {
-    public static IServiceCollection AddBlogModuleApplication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogModuleApplication(this IServiceCollection services, IConfiguration _)
     {
         // Currently, we don't have specific services to register here 
         // because MediatR is registered in the Shared layer scanning this assembly.

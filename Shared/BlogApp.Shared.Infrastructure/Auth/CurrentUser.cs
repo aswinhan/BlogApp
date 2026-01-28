@@ -6,13 +6,8 @@ internal sealed class CurrentUser(IHttpContextAccessor httpContextAccessor) : IC
     {
         get
         {
-            var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim is null)
-            {
-                throw new ApplicationException("User context is unavailable.");
-            }
-
+            var userIdClaim = (httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)) 
+                              ?? throw new ApplicationException("User context is unavailable.");
             return Guid.Parse(userIdClaim.Value);
         }
     }
