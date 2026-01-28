@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure.Database.Configurations;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+namespace BlogApp.Modules.Identity.Infrastructure.Database.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -18,11 +20,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         // Storing Roles as a simple list of Ints or Strings for now (Postgres Array) is an advanced option,
         // but let's stick to standard relations or simple JSON conversion if using Postgres.
         // For simplicity in Clean Architecture without a Join Table overhead for Enums:
+        // Fixed with ValueComparer to remove EF Core Migration warnings
         builder.Property(u => u.Roles)
-               .HasConversion(
-                   v => string.Join(',', v.Select(r => r.ToString())), // Stored as "User,Admin"
-                   v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                         .Select(s => Enum.Parse<Role>(s))
-                         .ToList());
+                .HasConversion(
+                    v => string.Join(',', v.Select(r => r.ToString())),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                          .Select(s => Enum.Parse<Role>(s))
+                          .ToList())
+                .Metadata.SetValueComparer(new ValueComparer<List<Role>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
     }
 }

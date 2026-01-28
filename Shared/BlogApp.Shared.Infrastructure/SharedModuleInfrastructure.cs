@@ -13,8 +13,9 @@ public static class SharedModuleInfrastructure
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        // 2. Database Interceptors
-        services.AddScoped<AuditableEntityInterceptor>();
+        // 2. Interceptors
+        services.AddScoped<AuditableEntityInterceptor>(); //Database Interceptors        
+        services.AddScoped<InsertOutboxMessagesInterceptor>(); // Outbox Interceptor            
 
         // 3. Caching
         // AddStackExchangeRedisCache is in Microsoft.Extensions.DependencyInjection namespace

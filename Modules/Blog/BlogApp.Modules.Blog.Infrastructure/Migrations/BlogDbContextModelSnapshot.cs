@@ -219,6 +219,34 @@ namespace BlogApp.Modules.Blog.Infrastructure.Migrations
                     b.ToTable("Tags", "blog");
                 });
 
+            modelBuilder.Entity("BlogApp.Shared.Infrastructure.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessages", "blog");
+                });
+
             modelBuilder.Entity("ArticleTag", b =>
                 {
                     b.HasOne("BlogApp.Modules.Blog.Domain.Entities.Article", null)

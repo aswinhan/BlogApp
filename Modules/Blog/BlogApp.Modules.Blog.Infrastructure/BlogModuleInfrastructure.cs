@@ -1,4 +1,6 @@
 ﻿using BlogApp.Modules.Blog.Application.Metrics;
+using BlogApp.Shared.Infrastructure.Interceptors;
+using BlogApp.Shared.Infrastructure.Outbox;
 
 namespace BlogApp.Modules.Blog.Infrastructure;
 
@@ -12,8 +14,20 @@ public static class BlogModuleInfrastructure
         // Assuming "postgres" is your connection string name or a shared helper
         // Since you used "AddPostgres", I assume it's from Aspire ServiceDefaults or Shared
         // If it's standard EF:
-        services.AddDbContext<BlogDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("postgres")));
+        var connectionString = configuration.GetConnectionString("postgres");
+
+        services.AddDbContext<BlogDbContext>((sp, options) =>
+        {
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "blog");
+            })
+            // Add Interceptors
+            .AddInterceptors(
+                sp.GetRequiredService<AuditableEntityInterceptor>(),
+                sp.GetRequiredService<InsertOutboxMessagesInterceptor>()
+            );
+        });
 
         services.AddScoped<IBlogDbContext>(sp => sp.GetRequiredService<BlogDbContext>());
 

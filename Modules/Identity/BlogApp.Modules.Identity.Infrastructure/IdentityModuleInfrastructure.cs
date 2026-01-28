@@ -1,4 +1,7 @@
-﻿namespace BlogApp.Modules.Identity.Infrastructure;
+﻿using BlogApp.Shared.Infrastructure.Interceptors;
+using BlogApp.Shared.Infrastructure.Outbox;
+
+namespace BlogApp.Modules.Identity.Infrastructure;
 
 public static class IdentityModuleInfrastructure
 {
@@ -13,12 +16,17 @@ public static class IdentityModuleInfrastructure
         // Aspire maps "postgres" to the correct connection string automatically.
         var connectionString = configuration.GetConnectionString("postgres");
 
-        services.AddDbContext<IdentityDbContext>(options =>
+        services.AddDbContext<IdentityDbContext>((sp, options) =>
         {
             options.UseNpgsql(connectionString, npgsqlOptions =>
             {
-                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "users");
-            });
+                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "identity");
+            })
+            // Add Interceptors
+            .AddInterceptors(
+                sp.GetRequiredService<AuditableEntityInterceptor>(),
+                sp.GetRequiredService<InsertOutboxMessagesInterceptor>()
+            );
         });
 
         // Expose the interface for the Application layer

@@ -39,3 +39,5 @@ global using System.Security.Claims;
 global using BlogApp.Shared.Application.Abstractions.Auth;
 global using BlogApp.Shared.Infrastructure.Behaviors;
 global using System.Diagnostics;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using BlogApp.Shared.Infrastructure.Outbox;

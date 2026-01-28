@@ -89,7 +89,7 @@ public sealed class User : Entity, IAuditableEntity
         user._roles.Add(Role.User);
 
         // Raise Domain Event (Optional but recommended)
-        // user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id));
+        //user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id));
 
         return user;
     }
