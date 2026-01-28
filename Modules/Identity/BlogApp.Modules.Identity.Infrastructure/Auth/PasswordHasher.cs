@@ -1,6 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
-
-namespace BlogApp.Modules.Identity.Infrastructure.Auth;
+﻿namespace BlogApp.Modules.Identity.Infrastructure.Auth;
 
 public sealed class PasswordHasher : IPasswordHasher
 {

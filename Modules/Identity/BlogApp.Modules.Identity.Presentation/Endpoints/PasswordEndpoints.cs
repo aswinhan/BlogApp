@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class PasswordEndpoints : IApiEndpoint
+public class PasswordEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

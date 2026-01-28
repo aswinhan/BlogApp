@@ -1,57 +1,88 @@
 ﻿namespace BlogApp.Shared.Infrastructure.Messaging;
 
-public sealed class InMemorySender(IServiceProvider serviceProvider) : ISender
+internal sealed class InMemorySender(IServiceProvider serviceProvider) : ISender
 {
-    private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new();
-
+    // 1. Command with NO return value (Void/Unit)
     public async Task<Result> Send(ICommand command, CancellationToken cancellationToken = default)
     {
-        var commandType = command.GetType();
-
-        var method = MethodCache.GetOrAdd(commandType, type =>
-        {
-            var handlerType = typeof(ICommandHandler<>).MakeGenericType(type);
-            return handlerType.GetMethod(nameof(ICommandHandler<ICommand>.Handle))
-                   ?? throw new InvalidOperationException($"Handle method not found on {handlerType.Name}");
-        });
-
-        var handlerType = typeof(ICommandHandler<>).MakeGenericType(commandType);
-        var handler = serviceProvider.GetRequiredService(handlerType);
-
-        return await (Task<Result>)method.Invoke(handler, [command, cancellationToken])!;
+        return await ExecutePipeline<Result>(command, cancellationToken);
     }
 
+    // 2. Command WITH return value
     public async Task<Result<TResponse>> Send<TResponse>(ICommand<TResponse> command, CancellationToken cancellationToken = default)
     {
-        var commandType = command.GetType();
-
-        var method = MethodCache.GetOrAdd(commandType, type =>
-        {
-            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(type, typeof(TResponse));
-            return handlerType.GetMethod(nameof(ICommandHandler<ICommand<TResponse>, TResponse>.Handle))
-                   ?? throw new InvalidOperationException($"Handle method not found on {handlerType.Name}");
-        });
-
-        var handlerType = typeof(ICommandHandler<,>).MakeGenericType(commandType, typeof(TResponse));
-        var handler = serviceProvider.GetRequiredService(handlerType);
-
-        return await (Task<Result<TResponse>>)method.Invoke(handler, [command, cancellationToken])!;
+        return await ExecutePipeline<Result<TResponse>>(command, cancellationToken);
     }
 
+    // 3. Query (Fixed: Renamed from 'Query' to 'Send' to match Interface)
     public async Task<Result<TResponse>> Send<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
     {
-        var queryType = query.GetType();
+        return await ExecutePipeline<Result<TResponse>>(query, cancellationToken);
+    }
 
-        var method = MethodCache.GetOrAdd(queryType, type =>
+    private async Task<TResponse> ExecutePipeline<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
+    {
+        var requestType = request.GetType();
+        var responseType = typeof(TResponse);
+
+        // Logic to find the correct generic handler interface
+        // We look for ICommandHandler<Req, Res> or IQueryHandler<Req, Res>
+        var innerType = responseType.IsGenericType
+            ? responseType.GetGenericArguments()[0]
+            : typeof(object);
+
+        Type handlerType;
+
+        if (typeof(TResponse) == typeof(Result))
         {
-            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(type, typeof(TResponse));
-            return handlerType.GetMethod(nameof(IQueryHandler<IQuery<TResponse>, TResponse>.Handle))
-                   ?? throw new InvalidOperationException($"Handle method not found on {handlerType.Name}");
-        });
+            // Non-generic Command
+            handlerType = typeof(ICommandHandler<>).MakeGenericType(requestType);
+        }
+        else
+        {
+            // Generic Command or Query
+            var cmdHandlerType = typeof(ICommandHandler<,>).MakeGenericType(requestType, innerType);
 
-        var handlerType = typeof(IQueryHandler<,>).MakeGenericType(queryType, typeof(TResponse));
-        var handler = serviceProvider.GetRequiredService(handlerType);
+            // Check if it's a Command Handler
+            if (serviceProvider.GetService(cmdHandlerType) != null)
+            {
+                handlerType = cmdHandlerType;
+            }
+            else
+            {
+                // Must be a Query Handler
+                handlerType = typeof(IQueryHandler<,>).MakeGenericType(requestType, innerType);
+            }
+        }
 
-        return await (Task<Result<TResponse>>)method.Invoke(handler, [query, cancellationToken])!;
+        var handler = serviceProvider.GetService(handlerType) ?? throw new InvalidOperationException($"No handler registered for {requestType.Name}");
+
+        // Setup Behaviors
+        var behaviorType = typeof(IPipelineBehavior<,>).MakeGenericType(requestType, responseType);
+        var behaviors = (IEnumerable<object>)serviceProvider.GetServices(behaviorType);
+
+        // Create the Pipeline Delegate
+        RequestHandlerDelegate<TResponse> pipeline = () =>
+        {
+            var method = handlerType.GetMethod("Handle")
+                         ?? throw new InvalidOperationException($"Handle method not found on {handlerType.Name}");
+
+            return (Task<TResponse>)method.Invoke(handler, [request, cancellationToken])!;
+        };
+
+        // Wrap Behaviors
+        foreach (var behavior in behaviors.Reverse())
+        {
+            var next = pipeline;
+            pipeline = () =>
+            {
+                var method = behaviorType.GetMethod("Handle")
+                             ?? throw new InvalidOperationException($"Handle method not found on behavior");
+
+                return (Task<TResponse>)method.Invoke(behavior, [request, next, cancellationToken])!;
+            };
+        }
+
+        return await pipeline();
     }
 }

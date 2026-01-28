@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\BlogApp.Shared.Presentation\BlogApp.Shared.Presentation.csproj" />
 		<ProjectReference Include="..\BlogApp.Modules.Identity.Application\BlogApp.Modules.Identity.Application.csproj" />
+		<ProjectReference Include="..\BlogApp.Modules.Identity.Infrastructure\BlogApp.Modules.Identity.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

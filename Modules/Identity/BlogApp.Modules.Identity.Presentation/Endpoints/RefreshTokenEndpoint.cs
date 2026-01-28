@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class RefreshTokenEndpoint : IApiEndpoint
+public class RefreshTokenEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
-public class GetArticlesEndpoint : IApiEndpoint
+public class GetArticlesEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

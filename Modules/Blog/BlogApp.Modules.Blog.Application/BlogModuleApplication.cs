@@ -1,8 +1,8 @@
-﻿namespace BlogApp.Modules.Identity.Application;
+﻿namespace BlogApp.Modules.Blog.Application;
 
-public static class IdentityModuleApplication
+public static class BlogModuleApplication
 {
-    public static IServiceCollection AddIdentityModuleApplication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogModuleApplication(this IServiceCollection services, IConfiguration configuration)
     {
         // Currently, we don't have specific services to register here 
         // because MediatR is registered in the Shared layer scanning this assembly.

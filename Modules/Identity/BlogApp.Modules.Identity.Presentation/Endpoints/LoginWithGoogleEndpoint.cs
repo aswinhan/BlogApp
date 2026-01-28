@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Identity.Presentation.Endpoints;
 
-public class LoginWithGoogleEndpoint : IApiEndpoint
+public class LoginWithGoogleEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

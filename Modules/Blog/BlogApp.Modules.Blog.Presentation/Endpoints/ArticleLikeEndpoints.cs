@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
-public class ArticleLikeEndpoints : IApiEndpoint
+public class ArticleLikeEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

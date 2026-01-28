@@ -1,66 +1,86 @@
-﻿using BlogApp.Shared.Domain.Abstractions;
-using BlogApp.Shared.Domain.Exceptions;
+﻿namespace BlogApp.Modules.Blog.Domain.Entities;
 
-namespace BlogApp.Modules.Blog.Domain.Entities;
-
-public sealed class Article : Entity, IAuditableEntity, ISoftDeletable
+public sealed class Article : AggregateRoot, IAuditableEntity, ISoftDeletable
 {
-    private readonly List<Tag> _tags = [];
-    private readonly List<Comment> _comments = [];
-
-    private Article() { }
-
-    private Article(Guid id, Guid authorId, string title, string content, string? summary, string slug)
-        : base(id)
-    {
-        AuthorId = authorId;
-        Title = title;
-        Content = content;
-        Summary = summary;
-        Slug = slug;
-        Status = ArticleStatus.Draft;
-        CreatedOnUtc = DateTime.UtcNow;
-    }
-
-    public Guid AuthorId { get; private set; }
+    // --- State ---
     public string Title { get; private set; }
+    public string Slug { get; private set; }
     public string Content { get; private set; }
     public string? Summary { get; private set; }
     public string? CoverImageUrl { get; private set; }
+    public Guid AuthorId { get; private set; }
+    public Guid? CategoryId { get; private set; }
+    public Category Category { get; set; }
     public ArticleStatus Status { get; private set; }
-    public string Slug { get; private set; }
-    public bool IsDeleted { get; private set; }
-    public DateTime? DeletedOnUtc { get; private set; }
+    public long ViewCount { get; private set; }
+    public DateTime? PublishedOnUtc { get; set; }
+
+    // --- Auditing ---
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? ModifiedOnUtc { get; set; }
-    public DateTime? PublishedOnUtc { get; private set; }
+    
+    // --- Soft Delete ---
+    public bool IsDeleted { get; private set; }
+    public DateTime? DeletedOnUtc { get; private set; }
 
-    public Guid? CategoryId { get; private set; }
-    public Category? Category { get; private set; }
-
+    // --- Collections ---
+    private readonly List<Tag> _tags = [];
     public IReadOnlyCollection<Tag> Tags => _tags.AsReadOnly();
+
+    private readonly List<Comment> _comments = [];
     public IReadOnlyCollection<Comment> Comments => _comments.AsReadOnly();
 
-    public static Article Create(Guid authorId, string title, string content, string? summary, string slug, Guid? categoryId)
-    {
-        if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("Title is required");
-        if (string.IsNullOrWhiteSpace(content)) throw new ArgumentException("Content is required");
+    // --- Constructors ---
+    private Article() { } // Required by EF Core
 
-        var article = new Article(Guid.NewGuid(), authorId, title, content, summary, slug);
-        article.CategoryId = categoryId;
+    // --- Factory Method ---
+    public static Article Create(
+        string title,
+        string content,
+        string? summary,
+        Guid authorId,
+        string slug,
+        Guid? categoryId)
+    {
+        var article = new Article
+        {
+            Id = Guid.NewGuid(),
+            Title = title,
+            Content = content,
+            Summary = summary,
+            AuthorId = authorId,
+            Slug = slug,
+            CategoryId = categoryId,
+            Status = ArticleStatus.Draft,
+            CreatedOnUtc = DateTime.UtcNow,
+            ViewCount = 0,
+            IsDeleted = false
+        };
+
+        // Adds event to the internal list (Pure C#)
+        article.RaiseDomainEvent(new ArticleCreatedDomainEvent(article.Id));
+
         return article;
     }
 
+    // --- Lifecycle Actions ---
+
     public void Publish()
     {
-        if (IsDeleted) throw new DomainException("Cannot publish a deleted article.");
+        if (Status == ArticleStatus.Published) return;
+
         Status = ArticleStatus.Published;
-        PublishedOnUtc = DateTime.UtcNow;
         ModifiedOnUtc = DateTime.UtcNow;
+        // Logic: Published Date usually matches the FIRST time it was published
+        // If you want to update it every time, add: PublishedOnUtc = DateTime.UtcNow;
+
+        RaiseDomainEvent(new ArticlePublishedDomainEvent(Id));
     }
 
     public void Archive()
     {
+        if (Status == ArticleStatus.Archived) return;
+
         Status = ArticleStatus.Archived;
         ModifiedOnUtc = DateTime.UtcNow;
     }
@@ -68,28 +88,40 @@ public sealed class Article : Entity, IAuditableEntity, ISoftDeletable
     public void SoftDelete()
     {
         if (IsDeleted) return;
+
         IsDeleted = true;
         DeletedOnUtc = DateTime.UtcNow;
+        ModifiedOnUtc = DateTime.UtcNow;
+
+        RaiseDomainEvent(new ArticleDeletedDomainEvent(Id));
     }
 
     public void Recover()
     {
+        if (!IsDeleted) return;
+
         IsDeleted = false;
         DeletedOnUtc = null;
+        ModifiedOnUtc = DateTime.UtcNow;
     }
+
+    // --- Updates ---
 
     public void UpdateDetails(string title, string content, string? summary, string slug, Guid? categoryId)
     {
         if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("Title cannot be empty");
         if (string.IsNullOrWhiteSpace(content)) throw new ArgumentException("Content cannot be empty");
+        if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentException("Slug cannot be empty");
 
-        Title = title.Trim();     
-        Content = content.Trim(); 
+        Title = title.Trim();
+        Content = content.Trim();
         Summary = summary?.Trim();
         Slug = slug;
         CategoryId = categoryId;
 
         ModifiedOnUtc = DateTime.UtcNow;
+
+        RaiseDomainEvent(new ArticleUpdatedDomainEvent(Id));
     }
 
     public void UpdateCover(string? imageUrl)
@@ -98,11 +130,14 @@ public sealed class Article : Entity, IAuditableEntity, ISoftDeletable
         ModifiedOnUtc = DateTime.UtcNow;
     }
 
+    // --- Relationships ---
+
     public void AddTag(Tag tag)
     {
         if (!_tags.Contains(tag))
         {
             _tags.Add(tag);
+            ModifiedOnUtc = DateTime.UtcNow;
         }
     }
 
@@ -110,9 +145,8 @@ public sealed class Article : Entity, IAuditableEntity, ISoftDeletable
     {
         var comment = Comment.Create(Id, userId, content);
         _comments.Add(comment);
+        // Note: Adding a comment typically does NOT change Article.ModifiedOnUtc
     }
-
-    public long ViewCount { get; private set; }
 
     public void IncrementViewCount()
     {

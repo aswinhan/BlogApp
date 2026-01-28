@@ -12,10 +12,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="MailKit" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 		<PackageReference Include="NSwag.AspNetCore" />
 		<PackageReference Include="Scrutor" />
-		<PackageReference Include="StackExchange.Redis" />
 	</ItemGroup>
 
 	<ItemGroup>

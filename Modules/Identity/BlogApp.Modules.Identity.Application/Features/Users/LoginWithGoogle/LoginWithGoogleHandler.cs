@@ -1,6 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
-
-namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
+﻿namespace BlogApp.Modules.Identity.Application.Features.Users.LoginWithGoogle;
 
 public class LoginWithGoogleHandler(
     IIdentityDbContext dbContext,

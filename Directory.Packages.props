@@ -10,6 +10,7 @@
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.1.0" />
     <!-- BlogApp.ServiceDefaults packages -->
+    
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
@@ -27,9 +28,9 @@
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <!-- BlogApp.Shared.Infrastructure packages -->
+	  <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
-    <PackageVersion Include="StackExchange.Redis" Version="2.10.1" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
     <!-- BlogApp.Shared.Presentation packages -->

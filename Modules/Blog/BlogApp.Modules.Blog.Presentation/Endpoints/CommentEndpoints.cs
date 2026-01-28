@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
-public class CommentEndpoints : IApiEndpoint
+public class CommentEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

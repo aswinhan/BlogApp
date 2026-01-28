@@ -13,3 +13,6 @@ global using BlogApp.Shared.Domain.Pagination;
 global using BlogApp.Shared.Application.Abstractions.PublicApi;
 global using BlogApp.Shared.Application.Storage;
 global using Microsoft.AspNetCore.Http;
+global using System.Reflection;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

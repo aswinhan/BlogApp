@@ -5,6 +5,7 @@ public sealed record CreateArticleCommand(
     string Content,
     string? Summary,
     Guid? CategoryId,
+    DateTime? PublishedOnUtc,
     List<string> Tags) : ICommand<CreateArticleResponse>;
 
 // Define the response DTO

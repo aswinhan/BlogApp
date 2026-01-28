@@ -1,7 +1,4 @@
-﻿using BlogApp.Modules.Blog.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Modules.Blog.Application.Abstractions.Data;
+﻿namespace BlogApp.Modules.Blog.Application.Abstractions.Data;
 
 public interface IBlogDbContext
 {

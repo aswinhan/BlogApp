@@ -1,6 +1,4 @@
-﻿using BlogApp.Shared.Domain.Abstractions;
-using System.Linq.Expressions;
-
+﻿
 namespace BlogApp.Modules.Blog.Infrastructure.Database;
 
 public class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbContext(options), IBlogDbContext

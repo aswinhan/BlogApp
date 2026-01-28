@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Modules.Blog.Presentation.Endpoints;
 
-public class CreateArticleEndpoint : IApiEndpoint
+public class CreateArticleEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -15,6 +15,7 @@ public class CreateArticleEndpoint : IApiEndpoint
                 request.Content,
                 request.Summary,
                 request.CategoryId,
+                request.PublishedOnUtc,
                 request.Tags ?? []);
 
             Result<CreateArticleResponse> result = await sender.Send(command, cancellationToken);
@@ -37,5 +38,6 @@ public class CreateArticleEndpoint : IApiEndpoint
         string Content,
         string? Summary,
         Guid? CategoryId,
+        DateTime? PublishedOnUtc,
         List<string>? Tags);
 }

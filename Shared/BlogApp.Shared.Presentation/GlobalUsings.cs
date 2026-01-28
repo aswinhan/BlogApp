@@ -5,5 +5,4 @@ global using Microsoft.AspNetCore.Http;
 global using BlogApp.Shared.Presentation.Endpoints;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using System.Reflection;

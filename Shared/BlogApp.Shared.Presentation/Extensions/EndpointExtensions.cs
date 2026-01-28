@@ -6,14 +6,14 @@ public static class EndpointExtensions
         this IServiceCollection services,
         Assembly[] assemblies)
     {
-        // Find all classes that implement IApiEndpoint in the provided assemblies
+        // Find all classes that implement IEndpoint in the provided assemblies
         var endpointTypes = assemblies
             .SelectMany(a => a.GetTypes())
-            .Where(t => t.IsClass && !t.IsAbstract && t.IsAssignableTo(typeof(IApiEndpoint)));
+            .Where(t => t.IsClass && !t.IsAbstract && t.IsAssignableTo(typeof(IEndpoint)));
 
         foreach (var endpointType in endpointTypes)
         {
-            services.AddScoped(typeof(IApiEndpoint), endpointType);
+            services.AddScoped(typeof(IEndpoint), endpointType);
         }
 
         return services;
@@ -21,7 +21,7 @@ public static class EndpointExtensions
     public static IApplicationBuilder MapApiEndpoints(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var endpoints = scope.ServiceProvider.GetServices<IApiEndpoint>();
+        var endpoints = scope.ServiceProvider.GetServices<IEndpoint>();
 
         if (app is IEndpointRouteBuilder builder)
         {

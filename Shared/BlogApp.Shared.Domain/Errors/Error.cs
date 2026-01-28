@@ -1,6 +1,4 @@
-﻿using BlogApp.Shared.Domain.Results;
-
-namespace BlogApp.Shared.Domain.Errors;
+﻿namespace BlogApp.Shared.Domain.Errors;
 
 public readonly record struct Error
 {

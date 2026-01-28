@@ -1,6 +1,6 @@
 ﻿namespace BlogApp.Shared.Presentation.Endpoints;
 
-public interface IApiEndpoint
+public interface IEndpoint
 {
     void MapEndpoint(IEndpointRouteBuilder app);
 }

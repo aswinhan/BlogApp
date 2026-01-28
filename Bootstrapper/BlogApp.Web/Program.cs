@@ -1,106 +1,47 @@
-
-using BlogApp.ServiceDefaults;
+using BlogApp.Modules.Blog.Presentation;
+using BlogApp.Modules.Identity.Presentation;
+using BlogApp.ServiceDefaults; // For Aspire defaults
 
 var builder = WebApplication.CreateBuilder(args);
 
-// [OPTIMIZATION 1] Structured Logging
-builder.Host.UseSerilog((context, config) =>
-    config.ReadFrom.Configuration(context.Configuration));
-
-// Add Aspire Service Defaults This registers HealthChecks
+// 1. Add Service Defaults (Aspire)
 builder.AddServiceDefaults();
-builder.Services.AddHttpContextAccessor();
 
-// 1. Module Discovery
-Assembly[] moduleAssemblies = [
-    BlogApp.Modules.Identity.Presentation.AssemblyReference.Assembly,
-    BlogApp.Modules.Identity.Application.AssemblyReference.Assembly,
-    BlogApp.Modules.Blog.Presentation.AssemblyReference.Assembly,
-    BlogApp.Modules.Blog.Application.AssemblyReference.Assembly
-];
+// 2. Add Shared Services (The Core Engine)
+// This registers the InMemorySender, Logging, Validation, Caching, etc.
+builder.Services.AddSharedModuleInfrastructure(
+    builder.Configuration,
+    "WebBootstrapper");
 
-// 2. Shared Services
-builder.Services.AddSharedInfrastructure(moduleAssemblies, builder.Configuration);
-builder.Services.AddSharedApplication(moduleAssemblies);
+// 3. Add Modules (Vertical Slices)
+// Each module registers its own endpoints, services, and db context
+builder.Services.AddIdentityModulePresentation(builder.Configuration);
+builder.Services.AddBlogModulePresentation(builder.Configuration);
 
-builder.Services.AddEndpoints(moduleAssemblies);
-
-// 3. Module Services
-builder.Services.AddIdentityInfrastructure(builder.Configuration);
-builder.Services.AddBlogInfrastructure(builder.Configuration);
-
-// 4. Global API Handling
+// 4. Add Global Exception Handling
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-// [OPTIMIZATION 2] Advanced Rate Limiting (Anti-DDoS)
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("fixed", policy =>
-    {
-        policy.PermitLimit = 100; // 100 requests
-        policy.Window = TimeSpan.FromMinutes(1); // per minute
-        policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        policy.QueueLimit = 5;
-    });
-});
-
-// [OPTIMIZATION 3] High-Performance JSON
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    // Serialize Enums as Strings (Readable)
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    // Ignore null values to save bandwidth
-    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});
-
 var app = builder.Build();
 
-// --- HTTP Request Pipeline ---
+// 5. Configure Pipeline
+app.MapDefaultEndpoints(); // Health checks etc.
 
-// 1. Enable SeriLog Request Logging
-app.UseSerilogRequestLogging();
-
-// 2. Security Headers
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.Append("X-Frame-Options", "DENY");
-    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
-    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
-    await next();
-});
-
-// 3. Rate Limiting (Must be early)
-app.UseRateLimiter();
-
-// 4. Exception Handling
-app.UseExceptionHandler();
-
-// 5. Swagger (Development Only)
+// 6. Swagger (NSwag)
 if (app.Environment.IsDevelopment())
 {
+    // Uses the extension from Shared.Infrastructure
     app.UseSwaggerDocumentation();
-
-    // Auto-Migrate Databases
-    using var scope = app.Services.CreateScope();
-    await scope.MigrateModuleDatabasesAsync();
 }
 
 app.UseHttpsRedirection();
+app.UseExceptionHandler(); // Uses the GlobalExceptionHandler registered above
 
-// 6. Auth
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 7. Static Files
-app.UseStaticFiles();
-
-// 8. Maps /health and /alive for Aspire Dashboard
-app.MapDefaultEndpoints();
-
-// 9. Map All Endpoints
-app.MapApiEndpoints();
+// 7. Map Endpoints
+app.MapIdentityEndpoints();
+app.MapBlogEndpoints();
 
 app.Run();

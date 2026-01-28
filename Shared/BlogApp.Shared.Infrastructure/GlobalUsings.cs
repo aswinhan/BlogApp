@@ -37,3 +37,5 @@ global using NSwag;
 global using NSwag.Generation.Processors.Security;
 global using System.Security.Claims;
 global using BlogApp.Shared.Application.Abstractions.Auth;
+global using BlogApp.Shared.Infrastructure.Behaviors;
+global using System.Diagnostics;

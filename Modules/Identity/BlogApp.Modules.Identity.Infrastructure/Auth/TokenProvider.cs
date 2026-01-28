@@ -1,6 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
-
-namespace BlogApp.Modules.Identity.Infrastructure.Auth;
+﻿namespace BlogApp.Modules.Identity.Infrastructure.Auth;
 
 internal sealed class TokenProvider(IOptions<JwtOptions> jwtOptions) : ITokenProvider
 {

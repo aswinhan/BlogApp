@@ -1,66 +1,67 @@
 ﻿
 namespace BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 
-internal sealed class CreateArticleHandler(IBlogDbContext context,ICurrentUser currentUser)
-    : ICommandHandler<CreateArticleCommand, CreateArticleResponse>
+internal sealed class CreateArticleHandler(IBlogDbContext context, ICurrentUser currentUser) : ICommandHandler<CreateArticleCommand, CreateArticleResponse>
 {
-    public async Task<Result<CreateArticleResponse>> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
-    {
-        // 1. Generate Base Slug
-        string baseSlug = SlugGenerator.Generate(request.Title);
-        string finalSlug = baseSlug;
-        int counter = 1;
+    private readonly IBlogDbContext _context = context;
+    private readonly ICurrentUser _currentUser = currentUser;
 
-        // 2. Check for Uniqueness (Simple Loop)
-        // In a massive system, we might use a separate index or unique constraint catch
-        while (await context.Articles.AnyAsync(a => a.Slug == finalSlug, cancellationToken))
+    public async Task<Result<CreateArticleResponse>> Handle(CreateArticleCommand command, CancellationToken cancellationToken)
+    {
+        // 1. Generate Slug
+        var slug = SlugGenerator.Generate(command.Title);
+
+        // 2. Uniqueness Check
+        var slugExists = await _context.Articles
+            .AnyAsync(a => a.Slug == slug, cancellationToken);
+
+        if (slugExists)
         {
-            finalSlug = $"{baseSlug}-{counter}";
-            counter++;
+            // FIX: Use static factory method 'Error.Conflict' instead of 'new Error'
+            // Implicit conversion handles Result<CreateArticleResponse>
+            return Error.Conflict(
+                "Article.DuplicateSlug",
+                "An article with this title already exists.");
         }
 
         // 3. Create the Article
         var article = Article.Create(
-            currentUser.UserId,
-            request.Title,
-            request.Content,
-            request.Summary,
-            finalSlug,
-            request.CategoryId);
+            command.Title,
+            command.Content,
+            command.Summary,
+            _currentUser.UserId,
+            slug,
+            command.CategoryId
+        );
 
-        // 2. Handle Tags (Dedup logic)
-        if (request.Tags.Count != 0)
+        // 4. Handle Tags
+        if (command.Tags is { Count: > 0 })
         {
-            // Normalize tags to lower case
-            var tagNames = request.Tags.Select(t => t.Trim().ToLowerInvariant()).Distinct().ToList();
+            var distinctTagNames = command.Tags.Distinct().ToList();
 
-            // Find existing tags in DB
-            // We must use .AsTracking() here.
-            // If we don't, EF Core thinks these are "New" tags and tries to INSERT them again, causing a crash.
-            var existingTags = await context.Tags
-                .Where(t => tagNames.Contains(t.Name))
-                .AsTracking()
+            var existingTags = await _context.Tags
+                .Where(t => distinctTagNames.Contains(t.Name))
                 .ToListAsync(cancellationToken);
 
-            foreach (var tagName in tagNames)
+            foreach (var tagName in distinctTagNames)
             {
                 var tag = existingTags.FirstOrDefault(t => t.Name == tagName);
 
-                // Use existing or create new
                 if (tag is null)
                 {
                     tag = Tag.Create(tagName);
-                    context.Tags.Add(tag); // Mark new tag for adding
+                    _context.Tags.Add(tag);
                 }
 
                 article.AddTag(tag);
             }
         }
 
-        // 3. Save
-        context.Articles.Add(article);
-        await context.SaveChangesAsync(cancellationToken);
+        // 5. Persist
+        _context.Articles.Add(article);
+        await _context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(new CreateArticleResponse(article.Id, finalSlug));
+        // 6. Return Success
+        return new CreateArticleResponse(article.Id, article.Slug);
     }
 }

@@ -1,6 +1,4 @@
-﻿using BlogApp.Shared.Domain.Errors;
-
-namespace BlogApp.Shared.Domain.Results;
+﻿namespace BlogApp.Shared.Domain.Results;
 
 // 1. Non-Generic Result (Void)
 public readonly record struct Result

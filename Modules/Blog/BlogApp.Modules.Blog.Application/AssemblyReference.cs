@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace BlogApp.Modules.Blog.Application;
+﻿namespace BlogApp.Modules.Blog.Application;
 
 public static class AssemblyReference
 {

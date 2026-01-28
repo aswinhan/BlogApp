@@ -1,6 +1,4 @@
-﻿using BlogApp.Modules.Identity.Application.Abstractions.Auth;
-
-namespace BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;
+﻿namespace BlogApp.Modules.Identity.Application.Features.Users.ResetPassword;
 
 public class ResetPasswordHandler(
     IIdentityDbContext dbContext,

@@ -22,3 +22,4 @@ global using Microsoft.AspNetCore.Authorization;
 global using BlogApp.Modules.Identity.Domain.Constants;
 global using BlogApp.Modules.Identity.Application.Abstractions.Auth;
 global using BlogApp.Shared.Application.Abstractions.PublicApi;
+global using BlogApp.Modules.Identity.Infrastructure.PublicApi;

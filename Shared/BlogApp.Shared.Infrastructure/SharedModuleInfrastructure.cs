@@ -2,49 +2,53 @@
 
 public static class SharedModuleInfrastructure
 {
-    public static IServiceCollection AddSharedInfrastructure(
+    public static IServiceCollection AddSharedModuleInfrastructure(
         this IServiceCollection services,
-        Assembly[] moduleAssemblies,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        string moduleName) // Kept but unused parameter warning suppressed via usage or removal if preferred
     {
-        // 1. Core Services (File, Email, Swagger)
-        services.AddSwaggerWithJwt();
+        // 1. Messaging (The Engine)
+        services.AddScoped<ISender, InMemorySender>();
 
-        services.AddOptions<FileStorageSettings>()
-            .BindConfiguration(FileStorageSettings.SectionName)
-            .ValidateDataAnnotations().ValidateOnStart();
-        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        services.AddOptions<SmtpSettings>()
-            .BindConfiguration(SmtpSettings.SectionName)
-            .ValidateDataAnnotations().ValidateOnStart();
+        // 2. Database Interceptors
+        services.AddScoped<AuditableEntityInterceptor>();
+
+        // 3. Caching
+        // AddStackExchangeRedisCache is in Microsoft.Extensions.DependencyInjection namespace
+        // provided by Microsoft.Extensions.Caching.StackExchangeRedis package.
+        // We need BOTH IDistributedCache (for simple stuff) AND IConnectionMultiplexer (for advanced sets/keys)
+        var redisConnectionString = configuration.GetConnectionString("Redis");
+
+        // A. Register the raw connection for your RedisCachingService
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+            ConnectionMultiplexer.Connect(redisConnectionString!));
+
+        // B. Register the standard IDistributedCache implementation (optional if you only use your custom service)
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnectionString;
+        });
+
+        // C. Register your custom service
+        services.AddSingleton<ICachingService, RedisCachingService>();
+
+        // 4. Email
+        services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
         services.AddTransient<IEmailService, MailKitEmailService>();
 
-        // 2. Auth & Caching
-        services.ConfigureOptions<AuthorizationConfigureOptions>();
+        // 5. File Storage
+        services.Configure<FileStorageSettings>(configuration.GetSection("FileStorage"));
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
-        string redisConn = configuration.GetConnectionString("Redis") ?? "localhost:6379";
-        services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConn));
-        services.AddScoped<ICachingService, RedisCachingService>();
+        // 6. Swagger (NSwag)
+        services.AddSwaggerDocumentation();
 
-        // 3. Mediator (Scrutor Scanning)
-        services.AddScoped<ISender, InMemorySender>();
-        services.AddScoped<ICurrentUser, CurrentUser>();
-
-        services.Scan(scan => scan
-            .FromAssemblies(moduleAssemblies)
-            .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
-                .AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
-                .AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
-                .AsImplementedInterfaces().WithScopedLifetime()
-        );
-
-        // 4. Decorators
-        services.TryDecorate(typeof(IQueryHandler<,>), typeof(CachingQueryHandler<,>));
-        services.TryDecorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandler<>));
-        services.TryDecorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandler<,>));
+        // Log the module name to silence IDE0060 (Unused parameter)
+        // or effectively use it for specific module configuration if needed later.
+        _ = moduleName;
 
         return services;
     }

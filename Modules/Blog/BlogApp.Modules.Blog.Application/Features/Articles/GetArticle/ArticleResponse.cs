@@ -1,6 +1,4 @@
-﻿using BlogApp.Modules.Blog.Application.Features.Categories.GetCategories;
-
-namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
+﻿namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
 
 public sealed record ArticleResponse(
     Guid Id,

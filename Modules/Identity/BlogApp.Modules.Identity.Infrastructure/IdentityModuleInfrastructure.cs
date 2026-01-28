@@ -1,10 +1,8 @@
-﻿using BlogApp.Modules.Identity.Infrastructure.PublicApi;
-
-namespace BlogApp.Modules.Identity.Infrastructure;
+﻿namespace BlogApp.Modules.Identity.Infrastructure;
 
 public static class IdentityModuleInfrastructure
 {
-    public static IServiceCollection AddIdentityInfrastructure(
+    public static IServiceCollection AddIdentityModuleInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {

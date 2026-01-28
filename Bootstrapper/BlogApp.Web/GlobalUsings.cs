@@ -1,16 +1,7 @@
-﻿global using BlogApp.Modules.Identity.Infrastructure;
-global using BlogApp.Modules.Blog.Infrastructure;
-global using BlogApp.Shared.Application;
-global using BlogApp.Shared.Infrastructure;
-global using BlogApp.Shared.Presentation.Extensions;
+﻿global using BlogApp.Shared.Infrastructure;
 global using BlogApp.Web.Middleware;
-global using Microsoft.AspNetCore.RateLimiting;
-global using Serilog;
-global using System.Reflection;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.Mvc;
-global using BlogApp.Shared.Infrastructure.Database;
 global using BlogApp.Shared.Infrastructure.Swagger;
 global using System.Text.Json.Serialization;
-global using System.Threading.RateLimiting;
 global using BlogApp.Shared.Application.Exceptions;

@@ -9,3 +9,5 @@ global using BlogApp.Modules.Identity.Application.Features.Users.LoginUser;
 global using Microsoft.Extensions.DependencyInjection;
 global using BlogApp.Modules.Identity.Application.Abstractions.Auth;
 global using BlogApp.Shared.Application.Email;
+global using System.Reflection;
+global using Microsoft.Extensions.Configuration;

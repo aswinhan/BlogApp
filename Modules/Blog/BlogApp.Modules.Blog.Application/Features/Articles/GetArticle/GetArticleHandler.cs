@@ -1,6 +1,4 @@
-﻿using BlogApp.Shared.Application.Abstractions.PublicApi;
-
-namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
+﻿namespace BlogApp.Modules.Blog.Application.Features.Articles.GetArticle;
 
 internal sealed class GetArticleHandler(
     IBlogDbContext context,
