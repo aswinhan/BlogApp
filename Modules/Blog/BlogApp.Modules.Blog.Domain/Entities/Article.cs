@@ -15,6 +15,10 @@ public sealed class Article : AggregateRoot, IAuditableEntity, ISoftDeletable
     public long ViewCount { get; private set; }
     public DateTime? PublishedOnUtc { get; set; }
 
+    // Concurrency Token
+    // This GUID changes every time the entity is modified.
+    public Guid ConcurrencyToken { get; private set; }
+
     // --- Auditing ---
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? ModifiedOnUtc { get; set; }
@@ -54,7 +58,8 @@ public sealed class Article : AggregateRoot, IAuditableEntity, ISoftDeletable
             Status = ArticleStatus.Draft,
             CreatedOnUtc = DateTime.UtcNow,
             ViewCount = 0,
-            IsDeleted = false
+            IsDeleted = false,
+            ConcurrencyToken = Guid.NewGuid()
         };
 
         // Adds event to the internal list (Pure C#)
@@ -120,6 +125,7 @@ public sealed class Article : AggregateRoot, IAuditableEntity, ISoftDeletable
         CategoryId = categoryId;
 
         ModifiedOnUtc = DateTime.UtcNow;
+        ConcurrencyToken = Guid.NewGuid();
 
         RaiseDomainEvent(new ArticleUpdatedDomainEvent(Id));
     }

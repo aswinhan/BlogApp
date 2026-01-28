@@ -20,7 +20,7 @@ internal sealed class PublishArticleHandler(IBlogDbContext context)
         // Only the original author can publish it.
         if (article.AuthorId != request.UserId)
         {
-            return Result.Failure(Error.Failure("Article.Unauthorized", "You are not the author of this article"));
+            return Result.Failure(Error.Unauthorized("Article.Unauthorized", "You are not the author of this article"));
         }
 
         // 3. Execute Domain Logic

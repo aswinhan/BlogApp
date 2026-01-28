@@ -22,7 +22,7 @@ internal sealed class DeleteArticleHandler(
         // "Is the logged-in user the owner of this article?"
         if (article.AuthorId != currentUser.UserId)
         {
-            return Result.Failure(Error.Failure("Security.Forbidden", "You are not allowed to delete this article."));
+            return Result.Failure(Error.Forbidden("Security.Forbidden", "You are not allowed to delete this article."));
         }
 
         // 3. Perform Soft Delete

@@ -16,3 +16,5 @@ global using Microsoft.AspNetCore.Http;
 global using System.Reflection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.Diagnostics.Metrics;
+global using BlogApp.Modules.Blog.Application.Metrics;

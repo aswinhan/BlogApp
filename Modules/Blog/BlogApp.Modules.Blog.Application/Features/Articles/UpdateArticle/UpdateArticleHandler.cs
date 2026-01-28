@@ -1,7 +1,7 @@
 ﻿
 namespace BlogApp.Modules.Blog.Application.Features.Articles.UpdateArticle;
 
-internal sealed class UpdateArticleHandler(IBlogDbContext context, ICurrentUser currentUser)
+internal sealed class UpdateArticleHandler(IBlogDbContext context, ICurrentUser currentUser, BlogMetrics metrics)
     : ICommandHandler<UpdateArticleCommand>
 {
     public async Task<Result> Handle(UpdateArticleCommand request, CancellationToken cancellationToken)
@@ -18,8 +18,11 @@ internal sealed class UpdateArticleHandler(IBlogDbContext context, ICurrentUser 
         // 2. Authorization Check
         if (article.AuthorId != currentUser.UserId)
         {
-            return Result.Failure(Error.Failure("Security.Forbidden", "You are not allowed to edit this article."));
+            return Result.Failure(Error.Forbidden("Security.Forbidden", "You are not allowed to edit this article."));
         }
+
+        // [METRICS] Capture state before update
+        var wasDraft = article.Status == ArticleStatus.Draft;
 
         // 3. Generate New Slug (Required because Title might have changed)
         string baseSlug = SlugGenerator.Generate(request.Title);
@@ -38,7 +41,22 @@ internal sealed class UpdateArticleHandler(IBlogDbContext context, ICurrentUser 
         article.UpdateDetails(request.Title, request.Content, request.Summary, finalSlug, request.CategoryId);
 
         // 5. Save Changes
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+
+            // [METRICS] Check if status changed to Published
+            if (wasDraft && article.Status == ArticleStatus.Published)
+            {
+                metrics.ArticlePublished();
+            }
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // This happens if someone else modified the 'ConcurrencyToken' 
+            // between our Fetch (Step 1) and Save (Step 5).
+            return Result.Failure(Error.Conflict("Article.Confict", "This article was modified by someone else. Please refresh."));
+        }
 
         return Result.Success();
     }

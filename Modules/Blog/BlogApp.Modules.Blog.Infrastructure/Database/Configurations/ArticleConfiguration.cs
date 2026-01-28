@@ -36,5 +36,9 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
         // THE QUERY FILTER
         // "Whenever you ask for Articles, automatically add 'WHERE IsDeleted = false' to the SQL"
         builder.HasQueryFilter(a => !a.IsDeleted);
+
+        // Concurrency Configuration
+        builder.Property(a => a.ConcurrencyToken)
+            .IsConcurrencyToken();
     }
 }

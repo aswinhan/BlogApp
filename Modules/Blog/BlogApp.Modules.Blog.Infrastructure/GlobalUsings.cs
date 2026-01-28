@@ -9,3 +9,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using BlogApp.Modules.Blog.Domain.Constants;
 global using BlogApp.Shared.Infrastructure.Auth;
 global using Microsoft.AspNetCore.Authorization;
+global using System.Diagnostics.Metrics;

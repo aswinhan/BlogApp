@@ -58,6 +58,9 @@ namespace BlogApp.ServiceDefaults
                     metrics.AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddRuntimeInstrumentation();
+
+                    // Capture our Custom Business Metrics
+                    metrics.AddMeter("BlogApp.Modules.Blog");
                 })
                 .WithTracing(tracing =>
                 {

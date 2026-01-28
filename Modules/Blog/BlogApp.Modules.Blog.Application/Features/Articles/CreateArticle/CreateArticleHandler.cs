@@ -1,7 +1,7 @@
-﻿
+﻿using BlogApp.Modules.Blog.Application.Metrics;
 namespace BlogApp.Modules.Blog.Application.Features.Articles.CreateArticle;
 
-internal sealed class CreateArticleHandler(IBlogDbContext context, ICurrentUser currentUser) : ICommandHandler<CreateArticleCommand, CreateArticleResponse>
+internal sealed class CreateArticleHandler(IBlogDbContext context, ICurrentUser currentUser, BlogMetrics metrics) : ICommandHandler<CreateArticleCommand, CreateArticleResponse>
 {
     private readonly IBlogDbContext _context = context;
     private readonly ICurrentUser _currentUser = currentUser;
@@ -61,7 +61,14 @@ internal sealed class CreateArticleHandler(IBlogDbContext context, ICurrentUser 
         _context.Articles.Add(article);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // 6. Return Success
+        // 6. Record Metric
+        metrics.ArticleCreated();
+        if (command.PublishedOnUtc.HasValue && command.PublishedOnUtc <= DateTime.UtcNow)
+        {
+            metrics.ArticlePublished();
+        }
+
+        // 7. Return Success
         return new CreateArticleResponse(article.Id, article.Slug);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Modules.Blog.Infrastructure;
+﻿using BlogApp.Modules.Blog.Application.Metrics;
+
+namespace BlogApp.Modules.Blog.Infrastructure;
 
 public static class BlogModuleInfrastructure
 {
@@ -14,6 +16,11 @@ public static class BlogModuleInfrastructure
             options.UseNpgsql(configuration.GetConnectionString("postgres")));
 
         services.AddScoped<IBlogDbContext>(sp => sp.GetRequiredService<BlogDbContext>());
+
+
+        // 2. Metrics Registration [CRITICAL FIX]
+        // This ensures Minimal APIs treat BlogMetrics as a Service, not a Body
+        services.AddSingleton<BlogMetrics>();
 
         return services;
     }
