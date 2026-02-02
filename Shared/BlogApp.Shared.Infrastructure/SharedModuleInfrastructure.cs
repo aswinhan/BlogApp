@@ -21,7 +21,7 @@ public static class SharedModuleInfrastructure
         // AddStackExchangeRedisCache is in Microsoft.Extensions.DependencyInjection namespace
         // provided by Microsoft.Extensions.Caching.StackExchangeRedis package.
         // We need BOTH IDistributedCache (for simple stuff) AND IConnectionMultiplexer (for advanced sets/keys)
-        var redisConnectionString = configuration.GetConnectionString("blog-redis");
+        var redisConnectionString = configuration.GetConnectionString("redis");
 
         // A. Register the raw connection for your RedisCachingService
         services.AddSingleton<IConnectionMultiplexer>(sp =>

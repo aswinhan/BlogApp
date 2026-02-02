@@ -22,14 +22,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         // For simplicity in Clean Architecture without a Join Table overhead for Enums:
         // Fixed with ValueComparer to remove EF Core Migration warnings
         builder.Property(u => u.Roles)
-                .HasConversion(
-                    v => string.Join(',', v.Select(r => r.ToString())),
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                          .Select(s => Enum.Parse<Role>(s))
-                          .ToList())
-                .Metadata.SetValueComparer(new ValueComparer<List<Role>>(
-                    (c1, c2) => c1!.SequenceEqual(c2!),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
+               .HasConversion(
+                   // C# -> DB: Convert IReadOnlyCollection to comma-separated string
+                   v => string.Join(',', v.Select(r => r.ToString())),
+
+                   // DB -> C#: Convert string back to List (which implements IReadOnlyCollection)
+                   v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                         .Select(s => Enum.Parse<Role>(s))
+                         .ToList())
+
+               // [FIX] Use the correct type for the ValueComparer
+               .Metadata.SetValueComparer(new ValueComparer<IReadOnlyCollection<Role>>(
+                   (c1, c2) => c1!.SequenceEqual(c2!),
+                   c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                   c => c.ToList())); // Cloning logic
     }
 }

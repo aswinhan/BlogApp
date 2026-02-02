@@ -14,7 +14,7 @@ public static class IdentityModuleInfrastructure
 
         // FIX: Use standard AddDbContext. 
         // Aspire maps "postgres" to the correct connection string automatically.
-        var connectionString = configuration.GetConnectionString("blog-postgres");
+        var connectionString = configuration.GetConnectionString("postgres");
 
         services.AddDbContext<IdentityDbContext>((sp, options) =>
         {

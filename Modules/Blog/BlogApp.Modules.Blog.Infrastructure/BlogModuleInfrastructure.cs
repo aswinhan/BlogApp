@@ -14,7 +14,7 @@ public static class BlogModuleInfrastructure
         // Assuming "postgres" is your connection string name or a shared helper
         // Since you used "AddPostgres", I assume it's from Aspire ServiceDefaults or Shared
         // If it's standard EF:
-        var connectionString = configuration.GetConnectionString("blog-postgres");
+        var connectionString = configuration.GetConnectionString("postgres");
 
         services.AddDbContext<BlogDbContext>((sp, options) =>
         {
