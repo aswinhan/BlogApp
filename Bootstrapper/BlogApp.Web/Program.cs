@@ -1,6 +1,7 @@
 using BlogApp.Modules.Blog.Presentation;
 using BlogApp.Modules.Identity.Presentation;
-using BlogApp.ServiceDefaults; // For Aspire defaults
+using BlogApp.ServiceDefaults;
+using BlogApp.Shared.Infrastructure.Database; // For Aspire defaults
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,21 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+// Automatic Migration on Startup
+if (app.Environment.IsDevelopment())
+{
+    // Create a scope to resolve scoped services like DbContexts
+    using var scope = app.Services.CreateScope();
+
+    // Fetch all registered migrators (Blog, Identity)
+    var migrators = scope.ServiceProvider.GetServices<IModuleDatabaseMigrator>();
+
+    foreach (var migrator in migrators)
+    {
+        await migrator.MigrateAsync(scope);
+    }
+}
 
 // 5. Configure Pipeline
 app.MapDefaultEndpoints(); // Health checks etc.
